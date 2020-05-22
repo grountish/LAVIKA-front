@@ -1,12 +1,38 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@font-face{
+  font-family: Mantra;
+  src: url('./fonts/Mantra-Regular.ttf');
+}
 .navbar{
   display: flex;
   flex-direction: row;
-  background-color: rgb(132, 132, 218);
+  align-items: center;
+  justify-items: center;
+  justify-content: space-around;
+  min-height: 5rem;
 }
 .navbar-btns{
   display: flex;
   flex-direction: row;
+  margin: 2rem;
+  padding: 2rem;
+  margin-right: 2rem;
 }
 .navbar-btns *{
   margin-left: 14px;
+}
+
+.navbar h4{
+  text-decoration: none;
+  font-family: Mantra;
+  font-size: 2rem;
+  color: rgb(36, 36, 36);
+  margin: 2rem;
+  padding: 2rem;
+  margin-right: 2rem;
 }
