@@ -1,40 +1,38 @@
-import React, { Component } from 'react';
-import WaveSurfer from 'wavesurfer.js';
-import { WaveformContianer, Wave, PlayButton } from './Waveform.styled';
-class Waveform extends Component {
-  state = {
-    playing: false,
-  };
-  componentDidMount() {
-    const track = document.querySelector('#track');
-    this.waveform = WaveSurfer.create({
-      barWidth: 3,
-      cursorWidth: 1,
-      container: '#waveform',
-      backend: 'WebAudio',
-      height: 80,
-      progressColor: '#2D5BFF',
-      responsive: true,
-      waveColor: '#EFEFEF',
-      cursorColor: 'transparent',
-    });
-    this.waveform.load(track);
-  };
-  handlePlay = () => {
-    this.setState({ playing: !this.state.playing });
-    this.waveform.playPause();
-  };
-  render() {
-    const url = 'https://www.mfiles.co.uk/mp3-downloads/gs-cd-track2.mp3';
-    return (
-      <WaveformContianer>
-        <PlayButton onClick={this.handlePlay} >
-          {!this.state.playing ? 'Play' : 'Pause'}
-        </PlayButton>
-        <Wave id='waveform' />
-        <audio id='track' src={url} />
-      </WaveformContianer>
-    );
+import React from 'react';
+import Wavesurfer from 'wavesurfer.js';
+
+class Waveform extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      playing: false,
+      pos: 0
+    };
+    this.handleTogglePlay = this.handleTogglePlay.bind(this);
+    this.handlePosChange = this.handlePosChange.bind(this);
   }
-};
+  handleTogglePlay() {
+    this.setState({
+      playing: !this.state.playing
+    });
+  }
+  handlePosChange(e) {
+    this.setState({
+      pos: e.originalArgs[0]
+    });
+  }
+  render() {
+    return (
+      <div>
+        <Wavesurfer
+          audioFile={'path/to/audio/file.mp3'}
+          pos={this.state.pos}
+          onPosChange={this.handlePosChange}
+          playing={this.state.playing}
+        />
+      </div>
+      );
+  }
+}
 export default Waveform;

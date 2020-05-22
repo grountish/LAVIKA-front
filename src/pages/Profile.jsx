@@ -26,10 +26,14 @@ class Profile extends Component {
             <h1>{user.name}</h1>
             {user.songs.map(song=>{
                 return (
-                    <h4>
-                        {song.name}
-                    </h4>
-                )
+                    <div key={song._id}>
+                <h4>{song.name}</h4>
+                <audio controls>
+                   <source src={song.urlPath} type="audio/ogg"/>
+                  <source src={song.urlPath} type="audio/mpeg"/>
+                     Your browser does not support the audio tag.
+                </audio>
+              </div>)
             })}   
             </div>
         }

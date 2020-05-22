@@ -9,7 +9,7 @@ class Private extends Component {
         {
           this.props.isLoggedIn
             ? <div>
-            <h1></h1>
+          
             <h3>Username: {this.props.user.username}</h3>
             </div>
             : null
