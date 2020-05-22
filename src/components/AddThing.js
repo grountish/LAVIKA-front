@@ -8,7 +8,8 @@ class AddThing extends Component {
         this.state = {
           name: "",
           description: "",
-          urlPath: ""
+          urlPath: "",
+          user:''
         };
     }
     handleChange = e => {  
