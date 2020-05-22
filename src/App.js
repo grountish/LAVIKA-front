@@ -11,8 +11,6 @@ import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import PublicRoute from "./components/PublicRoute";
 import PrivateRoute from "./components/PrivateRoute";
-import SongsContextProvider from "./contexts/SongsContext";
-import ProfileContextProvider from "./contexts/ProfileContext";
 
 
 function App() {
@@ -24,12 +22,11 @@ function App() {
         <PublicRoute exact path="/signup" component={Signup} />
         <PublicRoute exact path="/login" component={Login} />
         <PrivateRoute exact path="/xp" component={xp} />
-        <SongsContextProvider>
+
         <PrivateRoute exact path="/comunity" component={Comunity} />
-        </SongsContextProvider>
-        <ProfileContextProvider>
         <PrivateRoute exact path="/profile" component={Profile} />
-        </ProfileContextProvider>
+
+  
       </Switch>
     </div>
   );

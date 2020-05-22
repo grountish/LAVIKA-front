@@ -1,22 +1,40 @@
 import React, { Component } from "react";
-// import { Link } from "react-router-dom";
+import axios from "axios";
 import { withAuth } from "./../lib/Auth";
-import { ProfileContext } from "../contexts/ProfileContext";
-//IMPORT DATA FROM MONGO
-//MAP OVER ALL Profile COLLECTION
-//DIPLAY ONE CARD FOR EACH SONG WITH TITLE AND DESCRIPTION
+
 class Profile extends Component {
-  static contextType = ProfileContext;
+  state = {
+    user: null,
+  };
+
+  componentDidMount() {
+    axios
+      .get("http://localhost:5000/users", { withCredentials: true })
+      .then((response) => this.setState({ user: response.data }));
+  }
+
   render() {
-    const { user } = this.props;
-    console.log(this.props);
+    const { user } = this.state;
+    console.log(user);
     return (
-      <div>
-        <h1>Profile PAGE </h1>
-        <h4>{user.username}</h4>
-      
-      </div>
-    );
+        <div>
+        {
+            !user
+            ? 'loading'
+            : 
+            <div>
+            <h1>{user.name}</h1>
+            {user.songs.map(song=>{
+                return (
+                    <h4>
+                        {song.name}
+                    </h4>
+                )
+            })}   
+            </div>
+        }
+    </div>
+    )
   }
 }
 
