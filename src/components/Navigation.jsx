@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { withAuth } from './../lib/Auth'
-
-class Navbar extends Component {
+import { withAuth } from '../lib/Auth'
+import { ThemeProvider } from 'emotion-theming'
+import theme from '@rebass/preset'
+import {Flex} from 'rebass'
+class Navigation extends Component {
   render() {
     // `user`, `logout`, `isLoggedIn` are coming from the AuthProvider 
     // and are injected by the withAuth HOC
     const { user, logout, isLoggedIn } = this.props;
 
     return (
-      <nav className="navbar">
-        <Link to={'/'} id='home-btn'>
-          <h4>Home</h4>
-        </Link>
+      <ThemeProvider theme={theme}>
+      <Flex className="navbar">
+       
+          <h4>LAVIKA</h4>
+       
         {
           isLoggedIn
             ? <div className="navbar-btns">
@@ -40,9 +43,10 @@ class Navbar extends Component {
                 </Link>
               </>
             )}
-      </nav>
+      </Flex>
+      </ThemeProvider>
     );
   }
 }
 
-export default withAuth(Navbar);
+export default withAuth(Navigation);

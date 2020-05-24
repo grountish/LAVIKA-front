@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import axios from 'axios';
+import styled from "styled-components";
+import { Device } from "../components/Device";
+
+
 // import the service file since we need it to send (and get) the data to(from) server
 //import service from '../api/service';
 class AddThing extends Component {
@@ -47,10 +51,32 @@ class AddThing extends Component {
             console.log("Error while adding the thing: ", err);
         });
     }  
-    render() {
+ 
+        render() {
+            const AddThing = styled.div`
+              @media ${Device.laptop} {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 80%;
+                margin: 0 auto;
+              }
+        
+              @media ${Device.tablet} {
+                width: 100%;
+                background-color: blue;
+              }
+        
+              @media ${Device.mobile} {
+                width: 100%;
+                background-color: yellow;
+              }
+            `;
         return (
-          <div>
+          <AddThing>
             <h2>New Thing</h2>
+            <br/>
             <form onSubmit={e => this.handleSubmit(e)}>
                 <label>Name</label>
                 <input 
@@ -58,18 +84,20 @@ class AddThing extends Component {
                     name="name" 
                     value={ this.state.name } 
                     onChange={ e => this.handleChange(e)} />
+                    <br/>
                 <label>Description</label>
                 <textarea 
                     type="text" 
                     name="description" 
                     value={ this.state.description } 
                     onChange={ e => this.handleChange(e)} />
+                      <br/>
                 <input 
                     type="file" 
                     onChange={(e) => this.handleFileUpload(e)} /> 
                 <button type="submit">Save new thing</button>
             </form>
-          </div>
+          </AddThing>
         );
     }
 }
