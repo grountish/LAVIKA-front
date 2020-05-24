@@ -18,6 +18,7 @@ function App() {
     <div className="App">
       <Navbar />
       <Switch>
+      
         <Route exact path="/" component={Home} />
         <PublicRoute exact path="/signup" component={Signup} />
         <PublicRoute exact path="/login" component={Login} />
@@ -26,7 +27,6 @@ function App() {
         <PrivateRoute exact path="/comunity" component={Comunity} />
         <PrivateRoute exact path="/profile" component={Profile} />
 
-  
       </Switch>
     </div>
   );

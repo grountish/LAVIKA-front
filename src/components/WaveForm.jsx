@@ -1,38 +1,39 @@
-import React from 'react';
-import Wavesurfer from 'wavesurfer.js';
+import React, { Component } from 'react';
+import WaveSurfer from 'wavesurfer.js';
 
-class Waveform extends React.Component {
-  constructor(props) {
+class Waveform extends Component {  
+
+  constructor(props){
     super(props);
-
     this.state = {
       playing: false,
-      pos: 0
-    };
-    this.handleTogglePlay = this.handleTogglePlay.bind(this);
-    this.handlePosChange = this.handlePosChange.bind(this);
+    }
   }
-  handleTogglePlay() {
-    this.setState({
-      playing: !this.state.playing
+  componentDidMount() {
+    this.waveform = WaveSurfer.create({
+      container: '#waveform',
+      scrollParent: true
     });
-  }
-  handlePosChange(e) {
-    this.setState({
-      pos: e.originalArgs[0]
-    });
-  }
+
+    this.waveform.load(this.props.urlPath);
+  };
+  
+  handlePlay = () => {
+    this.setState({ playing: !this.state.playing });
+    this.waveform.playPause();
+  };
+  
   render() {
     return (
-      <div>
-        <Wavesurfer
-          audioFile={'path/to/audio/file.mp3'}
-          pos={this.state.pos}
-          onPosChange={this.handlePosChange}
-          playing={this.state.playing}
-        />
-      </div>
-      );
+             
+        <div id="waveform"> 
+        <button onClick={this.handlePlay}>
+          {!this.state.playing ? 'Play' : 'Pause'}
+        </button>
+        </div>  
+     
+    );
   }
-}
+};
+
 export default Waveform;

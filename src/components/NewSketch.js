@@ -280,6 +280,7 @@ class NewSketch extends React.Component {
                 result += '  '
             }
             let parr = p.createP(result)
+            self.parr = parr
             parr.id('parr')
             // let wordsSeparated = []
             // wordsSeparated = rita.tokenize(result)
@@ -310,6 +311,8 @@ class NewSketch extends React.Component {
 	componentWillUnmount() {
         this.canvas.remove();
         this.drums.pause();
+        this.parr.remove()
+
 	}
 
     render() {

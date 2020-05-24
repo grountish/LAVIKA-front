@@ -25,18 +25,18 @@ class Navbar extends Component {
               <Link to={'/comunity'} id='comunity-btn'>
               <h4>COMUNITY</h4>
                </Link>
-              <button onClick={logout}> Logout </button>
+              <h4 onClick={logout}> Logout </h4>
             </div>
             : (
               <>
                 <Link to="/login">
                   {' '}
-                  <button className="navbar-button">Login</button>{' '}
+                  <h4 className="navbar-button">Login</h4>{' '}
                 </Link>
                 <br />
                 <Link to="/signup">
                   {' '}
-                  <button className="navbar-button">Sign Up</button>{' '}
+                  <h4 className="navbar-button">Sign Up</h4>{' '}
                 </Link>
               </>
             )}
