@@ -1,4 +1,6 @@
 import React from "react";
+//import { createLoop } from 'p5';
+
 import p5 from "p5";
 import "p5/lib/addons/p5.sound";
 import "p5/lib/addons/p5.dom";
@@ -16,7 +18,6 @@ import AddThing from "../components/AddThing";
 import styled from "styled-components";
 import { Device } from "../components/Device";
 import axios from 'axios';
-import RecordRTC from 'recordrtc';
 
 let scene = {
   bpm:'',
@@ -24,7 +25,7 @@ let scene = {
 };
 
 
-class NewSketch extends React.Component {
+class NewSketch2 extends React.Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
@@ -656,35 +657,35 @@ saveScene =()=>{
 
 
 
-recordCanvas = async() => {
-    let canvas = this.canvas
-    let recorder = new RecordRTC(this.canvas, {
-      type: 'canvas'
-    });
+// recordCanvas = async() => {
+//     let canvas = this.canvas
+//     let recorder = new RecordRTC(this.canvas, {
+//       type: 'canvas'
+//     });
 
-    recorder.startRecording();
-    const sleep = m => new Promise(r => setTimeout(r, m));
-    await sleep(6000);
+//     recorder.startRecording();
+//     const sleep = m => new Promise(r => setTimeout(r, m));
+//     await sleep(6000);
 
-    recorder.stopRecording(function() {
-      let blob = recorder.getBlob();
-      RecordRTC.invokeSaveAsDialog(blob);
-      ////////
-   })
-  // let stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
-  // let recorder = new RecordRTC.RecordRTCPromisesHandler(stream, {
-  //   type: 'video'
-  // });
-  // recorder.startRecording();
+//     recorder.stopRecording(function() {
+//       let blob = recorder.getBlob();
+//       RecordRTC.invokeSaveAsDialog(blob);
+//       ////////
+//    })
+//   // let stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
+//   // let recorder = new RecordRTC.RecordRTCPromisesHandler(stream, {
+//   //   type: 'video'
+//   // });
+//   // recorder.startRecording();
  
-  // const sleep = m => new Promise(r => setTimeout(r, m));
-  // await sleep(3000);
+//   // const sleep = m => new Promise(r => setTimeout(r, m));
+//   // await sleep(3000);
  
-  // await recorder.stopRecording();
-  // let blob = await recorder.getBlob();
-  // RecordRTC.invokeSaveAsDialog(blob);
+//   // await recorder.stopRecording();
+//   // let blob = await recorder.getBlob();
+//   // RecordRTC.invokeSaveAsDialog(blob);
   
-}
+// }
 
   
 
@@ -795,4 +796,4 @@ recordCanvas = async() => {
   }
 }
 
-export default NewSketch;
+export default NewSketch2;
