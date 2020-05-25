@@ -6,7 +6,7 @@ import { AuthProvider } from './lib/Auth';
 import {ThemeProvider} from "styled-components";
 
 const theme = {
-  black: ['#1A1A1A', '#272727'],
+  black: ['#1a1a1a', '#272727'],
   yellow: ['#FFCF56', '#E4B363'],
   delete: '#C5283D',
   save: '#109648',
@@ -21,3 +21,4 @@ ReactDOM.render(
   </Router>
   </ThemeProvider>
   , document.getElementById('root'));
+

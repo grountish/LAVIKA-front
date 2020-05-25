@@ -1,52 +1,35 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-@font-face{
+@font-face {
   font-family: Mantra;
-  src: url('./fonts/Mantra-Regular.ttf');
-}
-.navbar{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-items: center;
-  justify-content: space-around;
-  min-height: 5rem;
-}
-.navbar-btns{
-  display: flex;
-  flex-direction: row;
-
-  margin-right: 2rem;
-}
-.navbar-btns *{
-  margin-left: 14px;
-  text-decoration: none;
+  src: url("./fonts/Mantra-Regular.ttf");
 }
 
-.navbar h4{
-  text-decoration: none;
-  font-family: Mantra;
-  font-size: 2rem;
-  color: rgb(36, 36, 36);
-  margin: 2rem;
-  padding: 2rem;
-  margin-right: 2rem;
+@font-face {
+  font-family: Comfortaa;
+  src: url("./fonts/Comfortaa-Medium.ttf");
 }
 
-/* .waveplayer{
-  width: 200px;
-  height: 100px;
-} */
-/* .songContainer{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-} */
+body{
+  background-image: url('./images/fondo.jpg');
 
+}
+
+button{
+  padding: 10px 20px;
+  border: 1px solid white;
+  border-radius: 5%;
+  background: none;
+  margin: 10px auto;
+  color: white;
+  font-family: Comfortaa;
+  font-size: 20px;
+  height: 3rem;
+}ç
 input[type=range] {
   -webkit-appearance: none;
   width: 100%;

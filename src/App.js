@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import { Switch, Route } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import xp from "./pages/Xp";
@@ -12,11 +11,15 @@ import Home from "./pages/Home";
 import PublicRoute from "./components/PublicRoute";
 import PrivateRoute from "./components/PrivateRoute";
 import Private from "./pages/Private";
+import './App.css'
+import styled from 'styled-components'
 
 function App() {
+
   return (
     <div className="App">
-      <Navigation />
+
+<Navigation />
       <Switch>
       
         <Route exact path="/" component={Home} />
@@ -27,8 +30,11 @@ function App() {
         <PrivateRoute exact path="/profile" component={Profile} />
         <PrivateRoute exact path="/edit-profile" component={EditProfile} />
         <PrivateRoute exact path="/private" component={Private} />
+        <PrivateRoute exact path="/xp/:id" component={xp} />        
       </Switch>
+
     </div>
+    
   );
 }
 export default App;

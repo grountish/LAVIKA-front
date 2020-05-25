@@ -8,16 +8,16 @@ class Profile extends Component {
         user: null,
     };
 
-    componentDidMount() {
-        axios
-            .get("http://localhost:5000/users", { withCredentials: true })
-            .then((response) => this.setState({ user: response.data }));
-    }
+  componentDidMount() {
+    axios
+      .get(process.env.REACT_APP_API_URL + "/users", { withCredentials: true })
+      .then((response) => this.setState({ user: response.data }));
+  }
 
   handleDelete(id){
     console.log(id)
     axios
-    .delete(`http://localhost:5000/scenes/${id}`, { withCredentials: true })
+    .delete(`${process.env.REACT_APP_API_URL}/scenes/${id}`, { withCredentials: true })
     .then((response) => console.log(response));
     this.componentDidMount()
 
@@ -56,7 +56,20 @@ class Profile extends Component {
                 </div>
               );
             })}
+            <div>
+              {
+                user.scenes.map(scene=>{
+                  return(
+                    <div>
+                    <Link to={`/xp/${scene._id}`}>
+                      <h4>{scene._id}</h4></Link>
+                    </div>
+                  )
+                })
+              }
+            </div>
           </div>
+          
         )}
       </div>
     );

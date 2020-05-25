@@ -15,14 +15,13 @@ import rita from "rita";
 import AddThing from "../components/AddThing";
 import styled from "styled-components";
 import { Device } from "../components/Device";
-import axios from 'axios';
-import RecordRTC from 'recordrtc';
+import axios from 'axios'
 
 let scene = {
-  bpm:'',
-  background:''
-};
-
+  strokeR: '',
+  strokeG: '' ,
+  strokeB: ''
+}
 
 class NewSketch extends React.Component {
   constructor(props) {
@@ -30,8 +29,8 @@ class NewSketch extends React.Component {
     this.myRef = React.createRef();
     this.state = {
       isLoading: true,
-      save:false,
-      bpm: ''
+      save: false,
+      showControls: false,
     };
   }
 
@@ -41,7 +40,6 @@ class NewSketch extends React.Component {
 
   sketch = (p) => {
     const self = this;
-
 
     
     let cnv = null;
@@ -258,6 +256,9 @@ class NewSketch extends React.Component {
       o5Phrase,
       o6Phrase,
       bpmCtr,
+      strokeR,
+      strokeG,
+      strokeB,
       i,
       ki,
       sn;
@@ -305,6 +306,7 @@ class NewSketch extends React.Component {
       let getArticleBtn = p.createButton("Get Random Lyric");
       getArticleBtn.mousePressed(getArticle);
       getArticleBtn.parent("#lyricContainer");
+      self.getArticleBtn = getArticleBtn;
       //record Setup
 
       recordButton = p.createButton("record");
@@ -448,25 +450,48 @@ class NewSketch extends React.Component {
         drums.setBPM(bpmCtr.value());
       });
       drums.setBPM("60");
-
       
-      //////////////////////// new Sliders
-      aCtr = p.createSlider(30, 2240, 60, 1);
-      let aText = p.createP('Valor 1')
-      aText.parent('#sliders')
-      aCtr.parent("#sliders");
+      
+      ////////////////////////new sliders
 
-      bCtr = p.createSlider(30, 2240, 60, 1);
-      let bText = p.createP('Valor 2')
-      bText.parent('#sliders')
-      bCtr.parent("#sliders");
+      console.log(self , 'we are logging seft in here');
+      if(self.props.scene) {
+      let {strokeR: rValue, strokeG: gValue, strokeB: bValue} = this.props.scene
 
-      cCtr = p.createSlider(30, 2240, 60, 1);
-      let cText = p.createP('Valor 3')
-      cText.parent('#sliders')
-      cCtr.parent("#sliders");
+      //R
+      strokeR = p.createSlider(0, 250, rValue , 1)
+      strokeR.parent("#controlsContainer")
+      //strokeR.id('red')
 
+      //G
+      strokeG = p.createSlider(0, 250, bValue, 1)
+      strokeG.parent("#controlsContainer")
+      //strokeG.id('green')
 
+      //B
+      strokeB = p.createSlider(0, 250, gValue, 1)
+      strokeB.parent("#controlsContainer")
+      //strokeB.class('blue')
+      
+      } else {
+      //R
+      strokeR = p.createSlider(0, 250, 255, 1)
+      strokeR.parent("#controlsContainer")
+      //strokeR.id('red')
+
+      //G
+      strokeG = p.createSlider(0, 250, 0, 1)
+      strokeG.parent("#controlsContainer")
+      //strokeG.id('green')
+
+      //B
+      strokeB = p.createSlider(0, 250, 255, 1)
+      strokeB.parent("#controlsContainer")
+      //strokeB.class('blue')
+      
+      }
+      
+    
     };
 
     p.addIns = () => {
@@ -477,25 +502,25 @@ class NewSketch extends React.Component {
       sn = p.floor(p.random(perDistSnare));
       if (p.mouseX < p.width / 2 && p.mouseY < p.height / 2) {
         // Left - Up -- Hh
-        p.fill(123, 12, 234); // fills the color of the ellipse
+        p.fill(strokeR.value(), strokeG.value() / 4, this.vol * strokeB.value()/2); // fills the color of the ellipse
         p.ellipse(p.mouseX, p.mouseY, ranC, ranC); //
         hPat.push(i);
         console.log(`h added ${hPat}`);
       } else if (p.mouseX > p.width / 2 && p.mouseY < p.height / 2) {
         // Right - Up -- Kick
-        p.fill(23, 212, 134);
+        p.fill(this.vol * strokeR.value() / 6, strokeG.value(), this.vol * strokeB.value()/2);
         p.ellipse(p.mouseX, p.mouseY, ranC, ranC);
         kPat.push(ki);
         console.log(`k added ${kPat}`);
       } else if (p.mouseX < p.width / 2 && p.mouseY > p.height / 2) {
         // Left - Down - Snare
-        p.fill(223, 12, 134);
+        p.fill(this.vol * strokeR.value() / 2, this.vol * strokeG.value(), strokeB.value());
         p.ellipse(p.mouseX, p.mouseY, ranC, ranC);
         sPat.push(sn);
         console.log(`s added ${sPat}`);
       } else if (p.mouseX > p.width / 2 && p.mouseY > p.height / 2) {
         // right - Down - synths
-        p.fill(223, 222, 34);
+        p.fill(this.vol * strokeR.value(), this.vol * strokeG.value() / 4, strokeB.value()/2);
         p.ellipse(p.mouseX, p.mouseY, ranC, ranC);
         chosen.push(i);
         console.log(`sint added ${chosen}`);
@@ -515,12 +540,9 @@ class NewSketch extends React.Component {
     };
 
     p.draw = () => {
-      scene.bpm = bpmCtr.value()
-      aValue = aCtr.value()
-      bValue = bCtr.value()
-      cValue = cCtr.value()
-
-
+      scene.strokeR = strokeR.value()
+      scene.strokeG = strokeG.value()
+      scene.strokeB = strokeB.value()
 
       if (!self.state.isLoading) {
         self.setState({
@@ -529,8 +551,9 @@ class NewSketch extends React.Component {
       } else {
         p.frameRate(17);
         // get the overall volume (between 0 and 1.0)
-        let vol = mic.getLevel() * cValue;
-        p.fill(0);
+        let vol = mic.getLevel() * strokeB.value() / 10;
+        self.vol = vol
+        p.fill(strokeB.value());
         p.noStroke();
         p.smooth();
         // Draw an ellipse with height based on volume
@@ -539,10 +562,10 @@ class NewSketch extends React.Component {
         drawPointy(aValue);
         drawPointy(bValue);
         drawArc();
-        p.background(vol * 30, 7);
+        p.background(vol * strokeR.value(), vol * strokeG.value(), vol * strokeB.value(), 7);
 
         function drawPointy(weigh) {
-          p.stroke(vol * 200);
+          p.stroke(vol * strokeR.value() );
           p.smooth();
           p.strokeWeight(p.random(weigh));
           p.point(p.random(p.height * 1.6), p.random(p.width * 1.6));
@@ -582,7 +605,7 @@ class NewSketch extends React.Component {
 
     const getArticle = async () => {
       let poem = "";
-      let articleRaw = `http://poetrydb.org//author/emerson`;
+      let articleRaw = `http://poetrydb.org//author/Shakespeare;Sonnet`;
       const response = await fetch(articleRaw);
       const article1 = await response.json();
       let lines = p.random(article1).lines;
@@ -590,6 +613,7 @@ class NewSketch extends React.Component {
       let rs = new rita.RiString(poem);
       let words = rs.words();
       let pos = rs.pos();
+      this.getArticleBtn.remove();
 
       let result = " ";
       for (let i = 0; i < words.length; i++) {
@@ -606,8 +630,8 @@ class NewSketch extends React.Component {
 
       //self makes variable available in the global scope of the addClass
       //parr is div where random lyric is created
-
-      let parr = p.createP(result);
+      let newResult = result.slice(0, 950);
+      let parr = p.createP(newResult);
       self.parr = parr;
       parr.id("parr");
       parr.parent("#lyricContainer");
@@ -642,8 +666,8 @@ class NewSketch extends React.Component {
     }
   }
 
-saveScene =()=>{
-    axios.post('http://localhost:5000/scenes/save', scene, { withCredentials: true })
+  saveScene = () => {
+    axios.post(process.env.REACT_APP_API_URL + '/scenes/save', scene, { withCredentials: true })
     .then(res => {
         console.log(res);
         // here you would redirect to some other page 
@@ -652,62 +676,34 @@ saveScene =()=>{
         console.log("Error while adding the thing: ", err);
     });
    console.log(scene)
-}
+  }
 
-
-
-recordCanvas = async() => {
-    let canvas = this.canvas
-    let recorder = new RecordRTC(this.canvas, {
-      type: 'canvas'
-    });
-
-    recorder.startRecording();
-    const sleep = m => new Promise(r => setTimeout(r, m));
-    await sleep(6000);
-
-    recorder.stopRecording(function() {
-      let blob = recorder.getBlob();
-      RecordRTC.invokeSaveAsDialog(blob);
-      ////////
-   })
-  // let stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
-  // let recorder = new RecordRTC.RecordRTCPromisesHandler(stream, {
-  //   type: 'video'
-  // });
-  // recorder.startRecording();
- 
-  // const sleep = m => new Promise(r => setTimeout(r, m));
-  // await sleep(3000);
- 
-  // await recorder.stopRecording();
-  // let blob = await recorder.getBlob();
-  // RecordRTC.invokeSaveAsDialog(blob);
-  
-}
-
-  
-
-
-
- 
   render() {
     const MainDiv = styled.div`
       @media ${Device.laptop} {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        align-items: center;
+        ${"" /* align-items: center; */}
+        padding: 0 2.5%;
+        min-height: 80vh;
       }
 
       @media ${Device.tablet} {
-        width: 100%;
-        background-color: blue;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 0.5%;
       }
 
       @media ${Device.mobile} {
-        width: 100%;
-        background-color: yellow;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0;
+        align-items: center;
       }
     `;
 
@@ -717,7 +713,8 @@ recordCanvas = async() => {
         flex-flow: column;
         justify-content: space-around;
         align-items: center;
-        max-width: 25%;
+        max-width: 30%;
+        min-width: 30%;
         max-height: 400px;
         overflow-y: scroll;
       }
@@ -731,15 +728,17 @@ recordCanvas = async() => {
         width: 100%;
         background-color: yellow;
       }
-    `
+    `;
 
     const SketchContainer = styled.div`
       @media ${Device.laptop} {
         display: flex;
         flex-flow: column-reverse;
-        justify-content: space-around;
+        justify-content: flex-end;
         align-items: center;
-        max-width: 25%;
+        max-width: 30%;
+        min-width: 30%;
+        padding-top: 10px;
       }
 
       @media ${Device.tablet} {
@@ -751,8 +750,7 @@ recordCanvas = async() => {
         width: 100%;
         background-color: yellow;
       }
-    `
-
+    `;
 
     const ControlsContainer = styled.div`
       @media ${Device.laptop} {
@@ -760,35 +758,46 @@ recordCanvas = async() => {
         flex-flow: column;
         justify-content: space-around;
         align-items: center;
-        max-width: 25%;
-        min-width: 240px;
+        max-width: 30%;
+        min-width: 30%;
       }
 
       @media ${Device.tablet} {
         width: 100%;
-        background-color: blue;
+        display: flex;
+        flex-flow: column;
+        justify-content: space-around;
+        align-items: center;
+        max-width: 97.5%;
+        min-width: 97.5%;
       }
 
       @media ${Device.mobile} {
-        width: 100%;
-        background-color: yellow;
+        max-width: 100%%;
+        min-width: 100%%;
       }
-    `
+    `;
 
     return (
       <>
-     
         <MainDiv className="containerDiv">
           <LyricContainer className="lyricContainer" id="lyricContainer" />
           <SketchContainer className="sketchContainer" id="sketchContainer">
-           <AddThing />
-           <button onClick={this.recordCanvas}>recordcanvas</button>
-           <button onClick={this.saveScene}>save Scene</button>
+            <AddThing />
+            <button onClick={this.saveScene}>save scene</button>
           </SketchContainer>
-          <ControlsContainer className="controlsContainer" id="controlsContainer">
-              <div id="bpmcontrol"></div>
-              <div id="sliders"></div>
-           </ControlsContainer>
+          {/* <button
+            onClick={() =>
+              this.setState({ showControls: !this.state.showControls })
+            }
+          >
+            Show Controls
+          </button> */}
+          <ControlsContainer
+            // style={{ display: this.state.showControls ? "block" : "none" }}
+            className="controlsContainer"
+            id="controlsContainer">
+            </ControlsContainer>
         </MainDiv>
       </>
     );
