@@ -20,6 +20,8 @@ function withAuth(WrappedComponent) {
             login={valueFromProvider.login}
             signup={valueFromProvider.signup}
             logout={valueFromProvider.logout}
+            me={valueFromProvider.me}
+
           />
         )}
       </Consumer>
@@ -37,12 +39,24 @@ class AuthProvider extends React.Component {
   componentDidMount() {
     // When app and AuthProvider load for the first time
     // make a call to the server '/me' and check if user is authenitcated
+    this.me()
+  }
+
+  me = (cb) => {
     axios.get('http://localhost:5000/auth/me', { withCredentials: true })
-      .then((response) => {
-        const user = response.data;
-        this.setState({ isLoggedIn: true, isLoading: false, user });
-      })
-      .catch((err) => this.setState({ isLoggedIn: false, isLoading: false, user: null }));
+    .then((response) => {
+      const user = response.data;
+      this.setState({ isLoggedIn: true, isLoading: false, user }, ()=>{
+        if(cb){
+          cb()
+        }
+      });
+    })
+    .catch((err) => this.setState({ isLoggedIn: false, isLoading: false, user: null }), ()=>{
+      if(cb){
+        cb()
+      }
+    });
   }
 
   login = (username, password) => {
@@ -71,10 +85,10 @@ class AuthProvider extends React.Component {
 
   render() {
     const { user, isLoggedIn, isLoading } = this.state;
-    const { login, signup, logout } = this;
+    const { login, signup, logout, me } = this;
 
     return (
-      <Provider value={{ user, isLoggedIn, isLoading, login, signup, logout }}>
+      <Provider value={{ user, isLoggedIn, isLoading, login, signup, logout, me }}>
         {this.props.children}
       </Provider>
     )

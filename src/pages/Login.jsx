@@ -1,5 +1,11 @@
 import React, { Component } from "react";
 import { withAuth } from './../lib/Auth';
+// import {
+//   Label,
+//   Input,
+// } from '@rebass/forms'
+// import { ThemeProvider } from '../components/ThemeProvider'
+
 
 class Login extends Component {
   state = { username: "", password: "" };
@@ -28,12 +34,23 @@ class Login extends Component {
         <form onSubmit={this.handleFormSubmit}>
 
           <label>Username:</label>
-          <input type="text" name="username" value={username} onChange={this.handleChange} />
+          <input 
+          color='black'
+          type="text" 
+          name="username" 
+          value={username} 
+          onChange={this.handleChange} />
 
           <label>Password:</label>
-          <input type="password" name="password" value={password} onChange={this.handleChange} />
+          <input 
+          type="password" 
+          name="password" 
+          value={password} 
+          onChange={this.handleChange} />
 
-          <input type="submit" value="Login" />
+          <input 
+          type="submit" 
+          value="Login" />
         </form>
       </div>
     );
