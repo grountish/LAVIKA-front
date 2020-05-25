@@ -1,4 +1,6 @@
 import React from "react";
+//import { createLoop } from 'p5';
+
 import p5 from "p5";
 import "p5/lib/addons/p5.sound";
 import "p5/lib/addons/p5.dom";
@@ -15,7 +17,14 @@ import rita from "rita";
 import AddThing from "../components/AddThing";
 import styled from "styled-components";
 import { Device } from "../components/Device";
-import { Button } from 'rebass'
+import axios from 'axios';
+import RecordRTC from 'recordrtc';
+
+let scene = {
+  bpm:'',
+  background:''
+};
+
 
 class NewSketch extends React.Component {
   constructor(props) {
@@ -23,7 +32,8 @@ class NewSketch extends React.Component {
     this.myRef = React.createRef();
     this.state = {
       isLoading: true,
-      save:false
+      save:false,
+      bpm: ''
     };
   }
 
@@ -34,6 +44,8 @@ class NewSketch extends React.Component {
   sketch = (p) => {
     const self = this;
 
+
+    
     let cnv = null;
     let nouns = [
       "actor",
@@ -269,6 +281,7 @@ class NewSketch extends React.Component {
 
       // CANVAS
       cnv = p.createCanvas(400, 400);
+      cnv.id('canvas')
       self.canvas = cnv;
       cnv.mousePressed(p.addIns);
       cnv.parent("#sketchContainer");
@@ -277,20 +290,17 @@ class NewSketch extends React.Component {
       mic.start();
       self.mic = mic;
 
-      // layout
-
-      // let lyricContainer = p.createDiv('div')
-
-      // lyricContainer.parent('.containerDiv')
-
-      // let sketchContainer = p.createDiv('div')
-
-      // sketchContainer.parent('.containerDiv')
-
-      // let controlsContainer = p.createDiv('div')
-
-      // controlsContainer.parent('.containerDiv')
-
+    //   // createLoop
+    //   createLoop.createLoop({
+       
+    //     gif: {
+    //         options: { quality: 5 },
+    //         fileName: "noiseLoop.gif",
+    //         startLoop: 1,
+    //         endLoop: 2,
+    //       download:true
+    //     }
+    // })
       // get data buton
       let getArticleBtn = p.createButton("Get Random Lyric");
       getArticleBtn.mousePressed(getArticle);
@@ -437,6 +447,7 @@ class NewSketch extends React.Component {
       });
       drums.setBPM("60");
 
+      
       ////////////////////////
     };
 
@@ -486,6 +497,7 @@ class NewSketch extends React.Component {
     };
 
     p.draw = () => {
+      scene.bpm = bpmCtr.value()
       if (!self.state.isLoading) {
         self.setState({
           isLoading: false,
@@ -606,6 +618,55 @@ class NewSketch extends React.Component {
     }
   }
 
+saveScene =()=>{
+    axios.post('http://localhost:5000/scenes/save', scene, { withCredentials: true })
+    .then(res => {
+        console.log(res);
+        // here you would redirect to some other page 
+    })
+    .catch(err => {
+        console.log("Error while adding the thing: ", err);
+    });
+   console.log(scene)
+}
+
+
+
+recordCanvas = async() => {
+    let canvas = this.canvas
+    let recorder = new RecordRTC(this.canvas, {
+      type: 'canvas'
+    });
+
+    recorder.startRecording();
+    const sleep = m => new Promise(r => setTimeout(r, m));
+    await sleep(6000);
+
+    recorder.stopRecording(function() {
+      let blob = recorder.getBlob();
+      RecordRTC.invokeSaveAsDialog(blob);
+      ////////
+   })
+  // let stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
+  // let recorder = new RecordRTC.RecordRTCPromisesHandler(stream, {
+  //   type: 'video'
+  // });
+  // recorder.startRecording();
+ 
+  // const sleep = m => new Promise(r => setTimeout(r, m));
+  // await sleep(3000);
+ 
+  // await recorder.stopRecording();
+  // let blob = await recorder.getBlob();
+  // RecordRTC.invokeSaveAsDialog(blob);
+  
+}
+
+  
+
+
+
+ 
   render() {
     const MainDiv = styled.div`
       @media ${Device.laptop} {
@@ -696,13 +757,9 @@ class NewSketch extends React.Component {
         <MainDiv className="containerDiv">
           <LyricContainer className="lyricContainer" id="lyricContainer" />
           <SketchContainer className="sketchContainer" id="sketchContainer">
-          <div>
-          {
-        this.state.save ? <AddThing /> : null
-        }
-        </div>
-        <Button variant='outline' my={4} onClick={() => this.setState({save: !this.state.save})}>Save</Button>
-    
+           <AddThing />
+           <button onClick={this.recordCanvas}>recordcanvas</button>
+           <button onClick={this.saveScene}>save Scene</button>
           </SketchContainer>
           <ControlsContainer className="controlsContainer" id="controlsContainer" />
         </MainDiv>

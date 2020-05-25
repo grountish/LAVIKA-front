@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import axios from "axios";
 import { withAuth } from './../lib/Auth';
-import { Route, Redirect } from 'react-router-dom';
 
 // import axios from "axios";
 class EditProfile extends Component {
@@ -43,8 +42,11 @@ class EditProfile extends Component {
         axios.post('http://localhost:5000/users', this.state, { withCredentials: true })
         .then(res => {
             console.log('added: ', res);
-           
-            this.props.history.push('/profile')
+
+            this.props.me(()=>{
+              this.props.history.push('/profile')
+
+            })
            
         })
         .catch(err => {

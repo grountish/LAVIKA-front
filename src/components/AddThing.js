@@ -3,7 +3,26 @@ import axios from 'axios';
 import styled from "styled-components";
 import { Device } from "../components/Device";
 
+const AddThing2 = styled.div`
+@media ${Device.laptop} {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  margin: 0 auto;
+}
 
+@media ${Device.tablet} {
+  width: 100%;
+  background-color: blue;
+}
+
+@media ${Device.mobile} {
+  width: 100%;
+  background-color: yellow;
+}
+`;
 // import the service file since we need it to send (and get) the data to(from) server
 //import service from '../api/service';
 class AddThing extends Component {
@@ -13,7 +32,8 @@ class AddThing extends Component {
           name: "",
           description: "",
           urlPath: "",
-          user:''
+          user:'',
+          saveO:false
         };
     }
     handleChange = e => {  
@@ -53,28 +73,12 @@ class AddThing extends Component {
     }  
  
         render() {
-            const AddThing = styled.div`
-              @media ${Device.laptop} {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                width: 80%;
-                margin: 0 auto;
-              }
-        
-              @media ${Device.tablet} {
-                width: 100%;
-                background-color: blue;
-              }
-        
-              @media ${Device.mobile} {
-                width: 100%;
-                background-color: yellow;
-              }
-            `;
+           
         return (
-          <AddThing>
+          <div>
+               
+          {
+        this.state.saveO ? <AddThing2>
             <h2>New Thing</h2>
             <br/>
             <form onSubmit={e => this.handleSubmit(e)}>
@@ -97,7 +101,12 @@ class AddThing extends Component {
                     onChange={(e) => this.handleFileUpload(e)} /> 
                 <button type="submit">Save new thing</button>
             </form>
-          </AddThing>
+          </AddThing2> : null
+        }
+        
+        <button variant='outline' my={4} onClick={() => this.setState({saveO: !this.state.saveO})}>Save</button>
+    
+          </div>
         );
     }
 }
