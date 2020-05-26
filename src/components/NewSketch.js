@@ -105,6 +105,16 @@ class NewSketch extends React.Component {
   componentDidMount() {
     this.myP5 = new p5(this.sketch, this.myRef.current);
   }
+  componentDidUpdate() {
+    this.canvas.remove();
+    this.drums.pause();
+    this.mic.stop();
+    this.playButton.remove();
+    if (this.parr !== undefined) {
+      this.parr.remove();
+    }
+    this.myP5 = new p5(this.sketch, this.myRef.current);
+  }
 
   sketch = (p) => {
     const self = this;
@@ -341,9 +351,17 @@ class NewSketch extends React.Component {
     let perDistKick = [0, 0, 0, 1, 1, 1];
     let perDistSnare = [0, 0, 0, 0, 0, 0, 0, 1];
 
-    p.touchStarted = () => {
-      p.userStartAudio();
-    };
+    // p.touchStarted = () => {
+    //   p.userStartAudio();
+    // };
+
+    p.startAudio = () => {
+      p.userStartAudio(); 
+    }
+
+    let playButton = p.createButton('play')
+    playButton.mousePressed(p.startAudio)
+    self.playButton = playButton
 
     p.setup = () => {
       p.getAudioContext().suspend();
@@ -776,6 +794,7 @@ class NewSketch extends React.Component {
     this.canvas.remove();
     this.drums.pause();
     this.mic.stop();
+    this.playButton.remove();
     if (this.parr !== undefined) {
       this.parr.remove();
     }
