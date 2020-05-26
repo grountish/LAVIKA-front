@@ -62,7 +62,7 @@ class Profile extends Component {
                   return(
                     <div>
                     <Link to={`/xp/${scene._id}`}>
-                      <h4>{scene._id}</h4></Link>
+                      <h4>{scene.name}</h4></Link>
                     </div>
                   )
                 })

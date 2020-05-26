@@ -72,7 +72,7 @@ const FancyModalButton =()=> {
 
 
 let scene = {
-  name: Date.now(),
+  name: '',
   strokeR: '',
   strokeG: '' ,
   strokeB: '',
@@ -416,18 +416,34 @@ class NewSketch extends React.Component {
       });
 
       // PATTERNS
+      if(self.props.scene) { 
+        const {hPat:hp, kPat:kp, sPat:sp,o1Pat:o1p, o2Pat:o2p, o3Pat:o3p, o4Pat:o4p, o5Pat:o5p, o6Pat:o6p} = self.props.scene.patterns
 
-      hPat = [1, 0, 1, 0];
-      kPat = [1, 0, 1, 0];
-      sPat = [0, 0, 0, 1];
-      
-      o1Pat = [0, 0, 0, 0]; 
-      o2Pat = [0, 0, 0, 0];
-      o3Pat = [0, 0, 0, 0];
-      o4Pat = [0, 0, 0, 0];
-      o5Pat = [0, 0, 0, 0];
-      o6Pat = [0, 0, 0, 0];
+        hPat = hp
+        kPat = kp
+        sPat = sp
+        
+        o1Pat =  o1p
+        o2Pat = o2p
+        o3Pat = o3p
+        o4Pat =  o4p
+        o5Pat = o5p
+        o6Pat = o6p
+  
+      }else{
+        hPat = [1, 0, 1, 0];
+        kPat = [1, 0, 1, 0];
+        sPat = [0, 0, 0, 1];
 
+        o1Pat = [0, 0, 0, 0];
+        o2Pat = [0, 0, 0, 0];
+        o3Pat = [0, 0, 0, 0];
+        o4Pat = [0, 0, 0, 0];
+        o5Pat = [0, 0, 0, 0];
+        o6Pat = [0, 0, 0, 0];
+
+      }
+   
       arrOfSin = [o1Pat, o2Pat, o3Pat, o4Pat, o5Pat, o6Pat];
       
 
@@ -755,7 +771,9 @@ class NewSketch extends React.Component {
   }
 
   saveScene = () => {
-    console.log(this.nouns[3])
+    const ranInd = Math.floor(Math.random() * this.nouns.length)
+    let ranName = this.nouns[ranInd] +' '+ this.nouns[ranInd-1] 
+    scene.name = ranName
 
     axios.post(process.env.REACT_APP_API_URL + '/scenes/save', scene, { withCredentials: true })
     .then(res => {
@@ -879,10 +897,8 @@ transition: opacity ease 200ms;
          <MainDiv className="containerDiv">
           <LyricContainer className="lyricContainer" id="lyricContainer" />
           <SketchContainer className="sketchContainer" id="sketchContainer">
-            <AddThing />
-            <FancyModalButton />
-            <button onClick={this.toggleSaveScene}>Toggle Save Scene</button>
-
+            {/* <AddThing /> */}
+         
             <button onClick={this.saveScene}>save scene</button>
             </SketchContainer>
             {/* <button onClick={this.toggleControls}> Show Controls </button> */}
