@@ -25,7 +25,6 @@ class Profile extends Component {
 
   render() {
     const { user } = this.state;
-    console.log(user);
     return (
       <div>
         {!user ? (
@@ -33,7 +32,7 @@ class Profile extends Component {
         ) : (
           <div>
           <img
-              className="profileImg mt-4"
+              className="profileImg mt-4" style={{width:'100px'}}
               src={user.imgPath ? user.imgPath : 'hay q poner foto default'}
               alt=""
             />
@@ -43,26 +42,17 @@ class Profile extends Component {
             <Link to={`/edit-profile`}>
                   <h4>Edit profile</h4>
             </Link>
-            {user.songs.map((song) => {
-              return (
-                <div key={song._id}>
-                  <h4>{song.name}</h4>
-                  <audio controls>
-                    <source src={song.urlPath} type="audio/ogg" />
-                    <source src={song.urlPath} type="audio/mpeg" />
-                    Your browser does not support the audio tag.
-                  </audio>
-                  <button onClick={()=>{this.handleDelete(song._id)}}>X</button>
-                </div>
-              );
-            })}
+        
             <div>
               { user.scenes !== undefined 
               ? user.scenes.map(scene=>{
                   return(
-                    <div>
+                    <div key={scene._id}>
                     <Link to={`/xp/${scene._id}`}>
-                      <h4>{scene.name}</h4></Link>
+                      <h4>{scene.name}</h4>
+                      </Link>
+                      <img src={scene.capture} style={{width:'100px'}} alt="asd"/>
+                      <button onClick={()=>{this.handleDelete(scene._id)}}>X</button>
                     </div>
                   )
                 })

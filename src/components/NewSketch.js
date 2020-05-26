@@ -76,6 +76,7 @@ let scene = {
   strokeR: '',
   strokeG: '' ,
   strokeB: '',
+  capture:'',
   
   patterns: {
     hPat: [1, 0, 1, 0],
@@ -297,6 +298,7 @@ class NewSketch extends React.Component {
       "garage",
       "ghost",
     ];
+    let saveFramex
     self.nouns = nouns
     let hh, k, s, hPhrase, hPat, drums, arrOfSin, mic, recordButton;
     let recorder,
@@ -355,7 +357,7 @@ class NewSketch extends React.Component {
       mic = new p5.AudioIn();
       mic.start();
       self.mic = mic;
-
+      
       // layout
 
       // let lyricContainer = p.createDiv('div')
@@ -742,6 +744,8 @@ class NewSketch extends React.Component {
       // let wordsSeparated = []
       // wordsSeparated = rita.tokenize(result)
     };
+    
+    
 
     p.recordSong = () => {
       if (state === 0 && mic.enabled) {
@@ -759,6 +763,13 @@ class NewSketch extends React.Component {
         state++;
       }
     };
+
+    p.saveTheFrame =()=>{
+    p.saveFrames('out', 'png', 1, 1, data => {
+      scene.capture = data[0].imageData 
+    });
+  }
+    self.saveTheFrame = p.saveTheFrame
   };
 
   componentWillUnmount() {
@@ -771,6 +782,10 @@ class NewSketch extends React.Component {
   }
 
   saveScene = () => {
+
+    // console.log(this.canvas.toDataURL())
+
+    this.saveTheFrame()
     const ranInd = Math.floor(Math.random() * this.nouns.length)
     let ranName = this.nouns[ranInd] +' '+ this.nouns[ranInd-1] 
     scene.name = ranName
