@@ -80,7 +80,7 @@ class AddThing extends Component {
 
     return (
       <div className='addthing'>
-        <button variant='outline' my={4} onClick={() => this.setState({ saveO: !this.state.saveO })}>Save</button>
+        <button variant='outline' my={4} onClick={() => this.setState({ saveO: !this.state.saveO })}>Save Song</button>
 
         {
           this.state.saveO ? <AddThing2>

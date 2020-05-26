@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import p5 from "p5";
 import "p5/lib/addons/p5.sound";
 import "p5/lib/addons/p5.dom";
@@ -16,13 +16,80 @@ import AddThing from "../components/AddThing";
 import styled from "styled-components";
 import { Device } from "../components/Device";
 import axios from 'axios'
+import Modal, { ModalProvider, BaseModalBackground } from "styled-react-modal";
 
-let scene = {
-  strokeR: '',
-  strokeG: '' ,
-  strokeB: ''
+
+const StyledModal = Modal.styled`
+  width: 20rem;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  opacity: ${props => props.opacity};
+  transition: opacity ease 500ms;
+`;
+
+const FancyModalButton =()=> {
+  const [isOpen, setIsOpen] = useState(false);
+  const [opacity, setOpacity] = useState(0);
+
+  const toggleModal=(e)=> {
+    setIsOpen(!isOpen);
+  }
+
+  const afterOpen=() =>{
+    setTimeout(() => {
+      setOpacity(1);
+    }, 10);
+  }
+
+  const beforeClose=() =>{
+    return new Promise(resolve => {
+      setOpacity(0);
+      setTimeout(resolve, 200);
+    });
+  }
+
+  return (
+    <div>
+      <button onClick={toggleModal}>Open modal</button>
+      <StyledModal
+        isOpen={isOpen}
+        afterOpen={afterOpen}
+        beforeClose={beforeClose}
+        onBackgroundClick={toggleModal}
+        onEscapeKeydown={toggleModal}
+        opacity={opacity}
+        backgroundProps={{ opacity }}>
+        <span>Saved!</span>
+      </StyledModal>
+    </div>
+  );
 }
 
+
+
+
+let scene = {
+  name: Date.now(),
+  strokeR: '',
+  strokeG: '' ,
+  strokeB: '',
+  
+  patterns: {
+    hPat: [1, 0, 1, 0],
+    kPat: [1, 0, 1, 0],
+    sPat: [0, 0, 0, 1],
+
+    o1Pat: [0, 0, 0, 0], 
+    o2Pat: [0, 0, 0, 0],
+    o3Pat: [0, 0, 0, 0],
+    o4Pat: [0, 0, 0, 0],
+    o5Pat: [0, 0, 0, 0],
+    o6Pat: [0, 0, 0, 0]
+  }
+ }
 class NewSketch extends React.Component {
   constructor(props) {
     super(props);
@@ -230,6 +297,7 @@ class NewSketch extends React.Component {
       "garage",
       "ghost",
     ];
+    self.nouns = nouns
     let hh, k, s, hPhrase, hPat, drums, arrOfSin, mic, recordButton;
     let recorder,
       soundFile,
@@ -262,10 +330,8 @@ class NewSketch extends React.Component {
       i,
       ki,
       sn;
-      
 
     let state = 0;
-    let aCtr, bCtr, cCtr,aValue,bValue,cValue
     //deleted array of words to replace Chevrolet
 
     //perDist per instrument
@@ -282,7 +348,6 @@ class NewSketch extends React.Component {
 
       // CANVAS
       cnv = p.createCanvas(400, 400);
-      cnv.id('canvas')
       self.canvas = cnv;
       cnv.mousePressed(p.addIns);
       cnv.parent("#sketchContainer");
@@ -291,17 +356,20 @@ class NewSketch extends React.Component {
       mic.start();
       self.mic = mic;
 
-    //   // createLoop
-    //   createLoop.createLoop({
-       
-    //     gif: {
-    //         options: { quality: 5 },
-    //         fileName: "noiseLoop.gif",
-    //         startLoop: 1,
-    //         endLoop: 2,
-    //       download:true
-    //     }
-    // })
+      // layout
+
+      // let lyricContainer = p.createDiv('div')
+
+      // lyricContainer.parent('.containerDiv')
+
+      // let sketchContainer = p.createDiv('div')
+
+      // sketchContainer.parent('.containerDiv')
+
+      // let controlsContainer = p.createDiv('div')
+
+      // controlsContainer.parent('.containerDiv')
+
       // get data buton
       let getArticleBtn = p.createButton("Get Random Lyric");
       getArticleBtn.mousePressed(getArticle);
@@ -352,7 +420,8 @@ class NewSketch extends React.Component {
       hPat = [1, 0, 1, 0];
       kPat = [1, 0, 1, 0];
       sPat = [0, 0, 0, 1];
-      o1Pat = [0, 0, 0, 0];
+      
+      o1Pat = [0, 0, 0, 0]; 
       o2Pat = [0, 0, 0, 0];
       o3Pat = [0, 0, 0, 0];
       o4Pat = [0, 0, 0, 0];
@@ -360,6 +429,7 @@ class NewSketch extends React.Component {
       o6Pat = [0, 0, 0, 0];
 
       arrOfSin = [o1Pat, o2Pat, o3Pat, o4Pat, o5Pat, o6Pat];
+      
 
       // PHRASES
       hPhrase = new p5.Phrase(
@@ -442,9 +512,7 @@ class NewSketch extends React.Component {
       // SET BPM
 
       bpmCtr = p.createSlider(30, 140, 60, 1);
-      let bpmText = p.createP('BPM')
-      bpmText.parent('#bpmcontrol')
-      bpmCtr.parent("#bpmcontrol");
+      bpmCtr.parent("#controlsContainer");
 
       bpmCtr.input(() => {
         drums.setBPM(bpmCtr.value());
@@ -495,6 +563,9 @@ class NewSketch extends React.Component {
     };
 
     p.addIns = () => {
+      
+      
+
       let chosen = p.random(arrOfSin);
       i = p.floor(p.random(perDist));
       let ranC = p.random(255); // piks a random value between 0 and 255
@@ -525,6 +596,19 @@ class NewSketch extends React.Component {
         chosen.push(i);
         console.log(`sint added ${chosen}`);
       }
+      const [o1Pat, o2Pat, o3Pat, o4Pat, o5Pat, o6Pat] = arrOfSin
+
+      scene.patterns = {
+        hPat,
+        kPat,
+        sPat,
+        o1Pat, 
+        o2Pat, 
+        o3Pat, 
+        o4Pat, 
+        o5Pat, 
+        o6Pat
+      }
     };
 
     p.keyPressed = () => {
@@ -544,6 +628,10 @@ class NewSketch extends React.Component {
       scene.strokeG = strokeG.value()
       scene.strokeB = strokeB.value()
 
+      
+
+      // scene.patters
+
       if (!self.state.isLoading) {
         self.setState({
           isLoading: false,
@@ -559,8 +647,8 @@ class NewSketch extends React.Component {
         // Draw an ellipse with height based on volume
         let h = p.map(vol, 0, 1, p.random(1233), 0);
         p.ellipse((p.width / 1.2) * vol, h - 25, vol * 400, vol * 400);
-        drawPointy(aValue);
-        drawPointy(bValue);
+        drawPointy(100);
+        drawPointy(10);
         drawArc();
         p.background(vol * strokeR.value(), vol * strokeG.value(), vol * strokeB.value(), 7);
 
@@ -667,6 +755,8 @@ class NewSketch extends React.Component {
   }
 
   saveScene = () => {
+    console.log(this.nouns[3])
+
     axios.post(process.env.REACT_APP_API_URL + '/scenes/save', scene, { withCredentials: true })
     .then(res => {
         console.log(res);
@@ -676,6 +766,12 @@ class NewSketch extends React.Component {
         console.log("Error while adding the thing: ", err);
     });
    console.log(scene)
+
+  // 
+  }
+
+  toggleControls=()=>{
+    this.setState({showControls: !this.state.showControls})
   }
 
   render() {
@@ -688,7 +784,6 @@ class NewSketch extends React.Component {
         padding: 0 2.5%;
         min-height: 80vh;
       }
-
       @media ${Device.tablet} {
         display: flex;
         flex-direction: row;
@@ -696,7 +791,6 @@ class NewSketch extends React.Component {
         align-items: center;
         padding: 0 0.5%;
       }
-
       @media ${Device.mobile} {
         display: flex;
         flex-direction: column;
@@ -718,12 +812,10 @@ class NewSketch extends React.Component {
         max-height: 400px;
         overflow-y: scroll;
       }
-
       @media ${Device.tablet} {
         width: 100%;
         background-color: blue;
       }
-
       @media ${Device.mobile} {
         width: 100%;
         background-color: yellow;
@@ -740,12 +832,10 @@ class NewSketch extends React.Component {
         min-width: 30%;
         padding-top: 10px;
       }
-
       @media ${Device.tablet} {
         width: 100%;
         background-color: blue;
       }
-
       @media ${Device.mobile} {
         width: 100%;
         background-color: yellow;
@@ -760,8 +850,8 @@ class NewSketch extends React.Component {
         align-items: center;
         max-width: 30%;
         min-width: 30%;
+        max-height: 50vh;
       }
-
       @media ${Device.tablet} {
         width: 100%;
         display: flex;
@@ -771,34 +861,41 @@ class NewSketch extends React.Component {
         max-width: 97.5%;
         min-width: 97.5%;
       }
-
       @media ${Device.mobile} {
         max-width: 100%%;
         min-width: 100%%;
       }
     `;
 
+    const FadingBackground = styled(BaseModalBackground)`
+opacity: ${props => props.opacity};
+transition: opacity ease 200ms;
+`;
+
+   
     return (
       <>
-        <MainDiv className="containerDiv">
+       <ModalProvider backgroundComponent={FadingBackground}>
+         <MainDiv className="containerDiv">
           <LyricContainer className="lyricContainer" id="lyricContainer" />
           <SketchContainer className="sketchContainer" id="sketchContainer">
             <AddThing />
+            <FancyModalButton />
+            <button onClick={this.toggleSaveScene}>Toggle Save Scene</button>
+
             <button onClick={this.saveScene}>save scene</button>
-          </SketchContainer>
-          {/* <button
-            onClick={() =>
-              this.setState({ showControls: !this.state.showControls })
-            }
-          >
-            Show Controls
-          </button> */}
-          <ControlsContainer
-            // style={{ display: this.state.showControls ? "block" : "none" }}
+            </SketchContainer>
+            {/* <button onClick={this.toggleControls}> Show Controls </button> */}
+
+           
+               <ControlsContainer
             className="controlsContainer"
             id="controlsContainer">
             </ControlsContainer>
-        </MainDiv>
+           
+           
+         </MainDiv>
+        </ModalProvider>
       </>
     );
   }

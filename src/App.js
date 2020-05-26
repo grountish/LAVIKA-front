@@ -12,7 +12,6 @@ import PublicRoute from "./components/PublicRoute";
 import PrivateRoute from "./components/PrivateRoute";
 import Private from "./pages/Private";
 import './App.css'
-import styled from 'styled-components'
 
 function App() {
 

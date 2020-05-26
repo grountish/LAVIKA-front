@@ -57,8 +57,8 @@ class Profile extends Component {
               );
             })}
             <div>
-              {
-                user.scenes.map(scene=>{
+              { user.scenes !== undefined 
+              ? user.scenes.map(scene=>{
                   return(
                     <div>
                     <Link to={`/xp/${scene._id}`}>
@@ -66,6 +66,7 @@ class Profile extends Component {
                     </div>
                   )
                 })
+                : null
               }
             </div>
           </div>

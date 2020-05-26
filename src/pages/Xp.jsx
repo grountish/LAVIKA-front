@@ -4,7 +4,29 @@ import NewSketch2 from '../components/NewSketch2'
 import NewSketch3 from '../components/NewSketch3'
 import { withAuth } from './../lib/Auth';
 import axios from 'axios'
+import styled from "styled-components";
+import { Device } from "../components/Device";
 
+const XpContainer = styled.div`
+@media ${Device.laptop} {
+  text-align:center
+  
+}
+
+.buttonSwitch{
+  margin: 0 auto;
+  width: 130px;
+  font-size: 14px
+} 
+
+@media ${Device.tablet} {
+
+}
+
+@media ${Device.mobile} {
+ 
+}
+`;
 class Xp extends Component {
   constructor(props){
   super(props)
@@ -53,15 +75,15 @@ class Xp extends Component {
     }
 
   return (
-    <div>
-      <button onClick={this.switchCanvas}>Switch experience</button>
+    <XpContainer>
+      <button className="buttonSwitch" onClick={this.switchCanvas}>Switch experience</button>
     {
       this.state.scene === null 
       ? null 
       : canvas
   
     }
-    </div>
+    </XpContainer>
   )
 }
 }
