@@ -555,7 +555,7 @@ class NewSketch2 extends React.Component {
      
       }
       
-    
+      p.background(255, 165, 0)
     };
 
     p.addIns = () => {
@@ -633,43 +633,38 @@ class NewSketch2 extends React.Component {
         });
       } else {
 
-        let vol = mic.getLevel() * 10;
-        self.vol = vol
+        let vol = mic.getLevel() * strokeG.value()*100;
+
+        p.background(vol * 2, 255, vol, 0.1);
+        p.noStroke()
+        p.smooth()
+        let r = p.random(strokeR.value())
+        p.fill((vol * betaStroke.value() / 40) % 255, (vol* betaStroke.value() / 500) - 60, ((vol * 2) + 40), r);
+        let xoff = 0;
+        for (let x = 0; x <= strokeB.value(); x += 1) {
+          let y = p.map(p.noise(xoff, yoff), 0, 1, 20, 300);
+          p.vertex(x, y);
+          xoff += 0.01 + (betaStroke.value()/1000);
+          p.ellipse(y + (vol / 2) * xoff * 2, y + (vol / alphaStroke.value()), y - (vol), y - vol * 13)
 
 
-        xoff = xoff + 0.01;
-        let n = p.noise(xoff) * p.width;
-        // let vol = mic.getLevel() * 10;
-
-        p.background(0, 34 * vol, vol * 3, 14);
-        p.frameRate(16);
-        drawArc(n);
-
-        function drawArc(x) {
-          for (let i = 0; i < 90; i++) {
-            p.smooth();
-            p.fill(vol * n * 4);
-            p.noStroke()
-
-            p.smooth();
-            p.translate(10 * i, vol * 40, vol * 3);
-            p.rotate(p.PI / vol * 3, [vol, 78, i / 2]);
-
-            p.square(vol * n, vol * n, vol * n, vol * n);
-            p.fill(vol * n, 70, 70, 14);
-          }
         }
+
+        yoff += 0.01;
+ 
       }
     };
 
     const getArticle = async () => {
       let poem = "";
-      let articleRaw = `http://poetrydb.org//author/Shakespeare;Sonnet`;
+      let articleRaw = `https://newsapi.org/v2/everything?q=music&apiKey=adb3c70aeb8d496d9fd30a6d53b05fce`;
       const response = await fetch(articleRaw);
       const article1 = await response.json();
-      let lines = p.random(article1).lines;
-      lines.forEach((x) => (poem += x));
-      let rs = new rita.RiString(poem);
+      const ranInd = Math.floor(Math.random() * article1.articles.length)
+      let newLines = article1.articles[ranInd].content
+      // let lines = p.random(newLines).lines;
+      // lines.forEach((x) => (poem += x));
+      let rs = new rita.RiString(newLines);
       let words = rs.words();
       let pos = rs.pos();
       this.getArticleBtn.remove();

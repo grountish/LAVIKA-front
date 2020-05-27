@@ -687,12 +687,14 @@ class NewSketch3 extends React.Component {
 
     const getArticle = async () => {
       let poem = "";
-      let articleRaw = `http://poetrydb.org//author/Shakespeare;Sonnet`;
+      let articleRaw = `https://newsapi.org/v2/everything?q=music&apiKey=adb3c70aeb8d496d9fd30a6d53b05fce`;
       const response = await fetch(articleRaw);
       const article1 = await response.json();
-      let lines = p.random(article1).lines;
-      lines.forEach((x) => (poem += x));
-      let rs = new rita.RiString(poem);
+      const ranInd = Math.floor(Math.random() * article1.articles.length)
+      let newLines = article1.articles[ranInd].content
+      // let lines = p.random(newLines).lines;
+      // lines.forEach((x) => (poem += x));
+      let rs = new rita.RiString(newLines);
       let words = rs.words();
       let pos = rs.pos();
       this.getArticleBtn.remove();
@@ -720,7 +722,6 @@ class NewSketch3 extends React.Component {
       // let wordsSeparated = []
       // wordsSeparated = rita.tokenize(result)
     };
-    
     
 
     p.recordSong = () => {
