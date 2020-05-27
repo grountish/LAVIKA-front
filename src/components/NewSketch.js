@@ -501,7 +501,7 @@ class NewSketch extends React.Component {
       ////////////////////////new sliders
 
       if(self.props.scene) {
-      let {strokeR: rValue, strokeG: gValue, strokeB: bValue} = this.props.scene
+      let {strokeR: rValue, strokeG: gValue, strokeB: bValue, strokeAlpha: alphaValue, strokeBeta: betaValue} = this.props.scene
 
       //R
       strokeR = p.createSlider(0, 250, rValue , 1)
@@ -518,11 +518,11 @@ class NewSketch extends React.Component {
       strokeB.parent("#controlsContainer")
       //strokeB.class('blue')
       
-      alphaStroke = p.createSlider(0, 2550, alphaStroke, 1)
+      alphaStroke = p.createSlider(0, 2550, alphaValue, 1)
       alphaStroke.parent("#controlsContainer")
      
 
-      betaStroke = p.createSlider(0, 2500, betaStroke, 1)
+      betaStroke = p.createSlider(0, 2500, betaValue, 1)
       betaStroke.parent("#controlsContainer")
      
       
@@ -860,8 +860,8 @@ class NewSketch extends React.Component {
         flex-flow: column-reverse;
         justify-content: flex-end;
         align-items: center;
-        max-width: 30%;
-        min-width: 30%;
+        max-width: 40%;
+        min-width: 40%;
         padding-top: 10px;
       }
       @media ${Device.tablet} {
@@ -882,6 +882,7 @@ class NewSketch extends React.Component {
         align-items: center;
         max-width: 30%;
         min-width: 30%;
+        padding-right: 100px;
         max-height: 50vh;
       }
       @media ${Device.tablet} {
