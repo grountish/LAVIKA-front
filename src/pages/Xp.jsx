@@ -33,6 +33,7 @@ class Xp extends Component {
   this.state = {
     scene: null,
     canvas: 0
+   
   }
 }
   componentDidMount() {
@@ -43,7 +44,8 @@ class Xp extends Component {
     
       .then((response) => {
         let scene = response.data
-        this.setState({scene})
+        const canvas = scene.canvas
+        this.setState({scene,canvas})
 
       }).catch((err) => {
         console.log(err);
@@ -54,7 +56,7 @@ class Xp extends Component {
   }
 
   switchCanvas = ()=>{
-    this.setState({canvas: (this.state.canvas + 1) % 2})
+    this.setState({canvas: (this.state.canvas + 1) % 3})
 
   }
   render(){
@@ -79,7 +81,7 @@ class Xp extends Component {
       <button className="buttonSwitch" onClick={this.switchCanvas}>Switch experience</button>
     {
       this.state.scene === null 
-      ? null 
+      ? 'put spinner here' 
       : canvas
   
     }

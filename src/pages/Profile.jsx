@@ -24,9 +24,10 @@ display: grid;
       align-items: center;
 `
 const ProfileDiv = styled.div`
-width: 30%;
+width: 34%;
 float: left;
 height:100%;
+border-right: 1px solid #AAA;
 `
 const ScenesCards = styled.div`
 cursor: pointer;
@@ -48,6 +49,7 @@ border: solid 2px black;
 border-radius: 50%;
 object-fit: cover;
 object-position: 100% 50;
+box-shadow: 1px 1px 5px 1px #777;
 `
 const SceneImg = styled.img`
 width:20rem;
@@ -92,6 +94,24 @@ cursor: pointer;
 opacity: 0.75;
 `
 
+const Title = styled.h1`
+      font-family: Mantra;
+      font-size: 3rem;
+      color: white;
+      margin-top: 3rem;
+    `;
+    const Mail = styled.h3`
+    font-family: Mantra;
+    font-size: 1rem;
+    color: white;
+    margin-top: 2rem;
+  `;
+    const Info = styled.h3`
+    font-family: Mantra;
+    font-size: 1rem;
+    color: white;
+    margin: 1.6rem;
+  `;
 class Profile extends Component {
     state = {
         user: null,
@@ -124,29 +144,29 @@ class Profile extends Component {
           <ProfileDiv >
              <ProfPic 
               src={user.imgPath ? user.imgPath : 'default'}
-              alt="avatar"
+              alt="Scene Capture "
             />
-            <h1>{user.username}</h1>
-            <h4>{user.email}</h4>
-            <p>{user.aboutMe}</p>
-            <Link to={`/edit-profile`}>
+            <Title>{user.username}</Title>
+            <Mail>{user.email}</Mail>
+            <Info>{user.aboutMe}</Info>
+           <button> <Link style={{color:'white'}} to={`/edit-profile`}>
                   <h4>Edit profile</h4>
-            </Link>
+            </Link></button>
         </ProfileDiv>
             <ScenesDiv>
               { user.scenes !== undefined 
               ? user.scenes.map(scene=>{
                   return(
-                    <ScenesCards className="sceneCard" key={scene._id}>
+                     <ScenesCards className="sceneCard" key={scene._id}>
                   
                       <SceneImg className="imgCard" src={scene.capture} alt="asd"/> 
                       <SceneText>
-                       <Link to={`/xp/${scene._id}`}>
+                     <Link to={`/xp/${scene._id}`}> 
                       <h2 className="nameScene">{scene.name}</h2>
-                      </Link> 
+                     </Link> 
                       <CardA onClick={()=>{this.handleDelete(scene._id)}}>X</CardA>
                       </SceneText>
-                    </ScenesCards>
+                    </ScenesCards> 
                   )
                 })
                 : null

@@ -12,17 +12,34 @@ import o5Sound from "../samples/o5.wav";
 import o6Sound from "../samples/o6.wav";
 import sSound from "../samples/s.wav";
 import rita from "rita";
-import AddThing from "./AddThing";
 import styled from "styled-components";
-import { Device } from "./Device";
+import { Device } from "../components/Device";
 import axios from 'axios'
+import { withAuth } from "../lib/Auth";
+
 
 let scene = {
+  canvas: 2,
+  name: '',
   strokeR: '',
   strokeG: '' ,
-  strokeB: ''
-}
+  strokeB: '',
+  capture: '',
+  bpm: '60',
+  
+  patterns: {
+    hPat: [1, 0, 1, 0],
+    kPat: [1, 0, 1, 0],
+    sPat: [0, 0, 0, 1],
 
+    o1Pat: [0, 0, 0, 0], 
+    o2Pat: [0, 0, 0, 0],
+    o3Pat: [0, 0, 0, 0],
+    o4Pat: [0, 0, 0, 0],
+    o5Pat: [0, 0, 0, 0],
+    o6Pat: [0, 0, 0, 0]
+  }
+ }
 class NewSketch3 extends React.Component {
   constructor(props) {
     super(props);
@@ -35,6 +52,16 @@ class NewSketch3 extends React.Component {
   }
 
   componentDidMount() {
+    this.myP5 = new p5(this.sketch, this.myRef.current);
+  }
+  componentDidUpdate() {
+    this.canvas.remove();
+    this.drums.pause();
+    this.mic.stop();
+    this.playButton.remove();
+    if (this.parr !== undefined) {
+      this.parr.remove();
+    }
     this.myP5 = new p5(this.sketch, this.myRef.current);
   }
 
@@ -230,6 +257,8 @@ class NewSketch3 extends React.Component {
       "garage",
       "ghost",
     ];
+    
+    self.nouns = nouns
     let hh, k, s, hPhrase, hPat, drums, arrOfSin, mic, recordButton;
     let recorder,
       soundFile,
@@ -271,9 +300,19 @@ class NewSketch3 extends React.Component {
     let perDistKick = [0, 0, 0, 1, 1, 1];
     let perDistSnare = [0, 0, 0, 0, 0, 0, 0, 1];
 
-    p.touchStarted = () => {
-      p.userStartAudio();
-    };
+    // p.touchStarted = () => {
+    //   p.userStartAudio();
+    // };
+
+    p.startAudio = () => {
+      p.userStartAudio(); 
+    }
+
+    let playButton = p.createButton('play')
+    playButton.parent('#sketchContainer')
+    playButton.mousePressed(p.startAudio)
+    self.playButton = playButton
+
 
     p.setup = () => {
       p.getAudioContext().suspend();
@@ -287,21 +326,8 @@ class NewSketch3 extends React.Component {
       mic = new p5.AudioIn();
       mic.start();
       self.mic = mic;
-
-      // layout
-
-      // let lyricContainer = p.createDiv('div')
-
-      // lyricContainer.parent('.containerDiv')
-
-      // let sketchContainer = p.createDiv('div')
-
-      // sketchContainer.parent('.containerDiv')
-
-      // let controlsContainer = p.createDiv('div')
-
-      // controlsContainer.parent('.containerDiv')
-
+      
+    
       // get data buton
       let getArticleBtn = p.createButton("Get Random Lyric");
       getArticleBtn.mousePressed(getArticle);
@@ -348,18 +374,36 @@ class NewSketch3 extends React.Component {
       });
 
       // PATTERNS
+      if(self.props.scene) { 
+        const {hPat:hp, kPat:kp, sPat:sp,o1Pat:o1p, o2Pat:o2p, o3Pat:o3p, o4Pat:o4p, o5Pat:o5p, o6Pat:o6p} = self.props.scene.patterns
 
-      hPat = [1, 0, 1, 0];
-      kPat = [1, 0, 1, 0];
-      sPat = [0, 0, 0, 1];
-      o1Pat = [0, 0, 0, 0];
-      o2Pat = [0, 0, 0, 0];
-      o3Pat = [0, 0, 0, 0];
-      o4Pat = [0, 0, 0, 0];
-      o5Pat = [0, 0, 0, 0];
-      o6Pat = [0, 0, 0, 0];
+        hPat = hp
+        kPat = kp
+        sPat = sp
+        
+        o1Pat =  o1p
+        o2Pat = o2p
+        o3Pat = o3p
+        o4Pat =  o4p
+        o5Pat = o5p
+        o6Pat = o6p
+  
+      }else{
+        hPat = [1, 0, 1, 0];
+        kPat = [1, 0, 1, 0];
+        sPat = [0, 0, 0, 1];
 
+        o1Pat = [0, 0, 0, 0];
+        o2Pat = [0, 0, 0, 0];
+        o3Pat = [0, 0, 0, 0];
+        o4Pat = [0, 0, 0, 0];
+        o5Pat = [0, 0, 0, 0];
+        o6Pat = [0, 0, 0, 0];
+
+      }
+   
       arrOfSin = [o1Pat, o2Pat, o3Pat, o4Pat, o5Pat, o6Pat];
+      
 
       // PHRASES
       hPhrase = new p5.Phrase(
@@ -447,12 +491,11 @@ class NewSketch3 extends React.Component {
       bpmCtr.input(() => {
         drums.setBPM(bpmCtr.value());
       });
-      drums.setBPM("60");
+      drums.setBPM(this.props.scene.bpm || "60");
       
       
       ////////////////////////new sliders
 
-      console.log(self , 'we are logging seft in here');
       if(self.props.scene) {
       let {strokeR: rValue, strokeG: gValue, strokeB: bValue} = this.props.scene
 
@@ -493,6 +536,9 @@ class NewSketch3 extends React.Component {
     };
 
     p.addIns = () => {
+      
+      
+
       let chosen = p.random(arrOfSin);
       i = p.floor(p.random(perDist));
       let ranC = p.random(255); // piks a random value between 0 and 255
@@ -523,6 +569,19 @@ class NewSketch3 extends React.Component {
         chosen.push(i);
         console.log(`sint added ${chosen}`);
       }
+      const [o1Pat, o2Pat, o3Pat, o4Pat, o5Pat, o6Pat] = arrOfSin
+
+      scene.patterns = {
+        hPat,
+        kPat,
+        sPat,
+        o1Pat, 
+        o2Pat, 
+        o3Pat, 
+        o4Pat, 
+        o5Pat, 
+        o6Pat
+      }
     };
 
     p.keyPressed = () => {
@@ -541,6 +600,10 @@ class NewSketch3 extends React.Component {
       scene.strokeR = strokeR.value()
       scene.strokeG = strokeG.value()
       scene.strokeB = strokeB.value()
+      scene.bpm = bpmCtr.value()
+      
+
+      // scene.patters
 
       if (!self.state.isLoading) {
         self.setState({
@@ -636,6 +699,8 @@ class NewSketch3 extends React.Component {
       // let wordsSeparated = []
       // wordsSeparated = rita.tokenize(result)
     };
+    
+    
 
     p.recordSong = () => {
       if (state === 0 && mic.enabled) {
@@ -653,27 +718,69 @@ class NewSketch3 extends React.Component {
         state++;
       }
     };
+
+    p.saveTheFrame = async ()=>{
+
+    p.saveFrames('out', 'png', 1, 1, data => {
+      scene.capture = data[0].imageData 
+
+      axios.post(process.env.REACT_APP_API_URL + '/scenes/save', scene, { withCredentials: true })
+      .then(res => {
+        console.log(res);
+        // here you would redirect to some other page 
+      })
+      .catch(err => {
+        console.log("Error while adding the thing: ", err);
+    });
+
+    });
+  }
+    self.saveTheFrame = p.saveTheFrame
   };
 
   componentWillUnmount() {
     this.canvas.remove();
     this.drums.pause();
     this.mic.stop();
+    this.playButton.remove();
     if (this.parr !== undefined) {
       this.parr.remove();
     }
   }
 
-  saveScene = () => {
-    axios.post(process.env.REACT_APP_API_URL + '/scenes/save', scene, { withCredentials: true })
+  saveScene = async () => {
+
+    const ranInd = Math.floor(Math.random() * this.nouns.length)
+    let ranName = this.nouns[ranInd] +' '+ this.nouns[ranInd-1] 
+    scene.name = ranName 
+    await this.saveTheFrame()
+  }
+  updateScene = async () => {
+    scene.capture = this.props.scene.capture
+    scene.name = this.props.scene.name
+    scene.sceneId = this.props.scene._id
+
+    axios.put(process.env.REACT_APP_API_URL + '/scenes/update', scene, { withCredentials: true })
     .then(res => {
-        console.log(res);
-        // here you would redirect to some other page 
+      console.log(res);
+      // here you would redirect to some other page 
     })
     .catch(err => {
-        console.log("Error while adding the thing: ", err);
-    });
-   console.log(scene)
+      console.log("Error while adding the thing: ", err);
+  });
+    // await this.saveTheFrame()
+  }
+
+  toggleControls=()=>{
+    this.setState({showControls: !this.state.showControls})
+  }
+
+  isTheArtist=()=>{
+    if (this.props.scene){
+      return this.props.scene.user === this.props.user._id
+    } else{
+      return false
+    }
   }
 
   render() {
@@ -686,7 +793,6 @@ class NewSketch3 extends React.Component {
         padding: 0 2.5%;
         min-height: 80vh;
       }
-
       @media ${Device.tablet} {
         display: flex;
         flex-direction: row;
@@ -694,7 +800,6 @@ class NewSketch3 extends React.Component {
         align-items: center;
         padding: 0 0.5%;
       }
-
       @media ${Device.mobile} {
         display: flex;
         flex-direction: column;
@@ -716,12 +821,10 @@ class NewSketch3 extends React.Component {
         max-height: 400px;
         overflow-y: scroll;
       }
-
       @media ${Device.tablet} {
         width: 100%;
         background-color: blue;
       }
-
       @media ${Device.mobile} {
         width: 100%;
         background-color: yellow;
@@ -738,12 +841,10 @@ class NewSketch3 extends React.Component {
         min-width: 30%;
         padding-top: 10px;
       }
-
       @media ${Device.tablet} {
         width: 100%;
         background-color: blue;
       }
-
       @media ${Device.mobile} {
         width: 100%;
         background-color: yellow;
@@ -758,8 +859,8 @@ class NewSketch3 extends React.Component {
         align-items: center;
         max-width: 30%;
         min-width: 30%;
+        max-height: 50vh;
       }
-
       @media ${Device.tablet} {
         width: 100%;
         display: flex;
@@ -769,37 +870,40 @@ class NewSketch3 extends React.Component {
         max-width: 97.5%;
         min-width: 97.5%;
       }
-
       @media ${Device.mobile} {
         max-width: 100%%;
         min-width: 100%%;
       }
     `;
 
+
+
+   
     return (
       <>
-        <MainDiv className="containerDiv">
+         <MainDiv className="containerDiv">
           <LyricContainer className="lyricContainer" id="lyricContainer" />
           <SketchContainer className="sketchContainer" id="sketchContainer">
-            <AddThing />
-            <button onClick={this.saveScene}>save scene</button>
-          </SketchContainer>
-          {/* <button
-            onClick={() =>
-              this.setState({ showControls: !this.state.showControls })
-            }
-          >
-            Show Controls
-          </button> */}
-          <ControlsContainer
-            // style={{ display: this.state.showControls ? "block" : "none" }}
+         
+       {
+         this.isTheArtist() 
+         ?  <button onClick={this.updateScene}>Update scene</button>
+         : <button onClick={this.saveScene}>Save scene</button>
+       }  
+            
+            </SketchContainer>
+
+           
+               <ControlsContainer
             className="controlsContainer"
             id="controlsContainer">
             </ControlsContainer>
-        </MainDiv>
+           
+           
+         </MainDiv>
       </>
     );
   }
 }
 
-export default NewSketch3;
+export default withAuth(NewSketch3);
