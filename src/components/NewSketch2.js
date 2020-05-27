@@ -294,6 +294,8 @@ class NewSketch2 extends React.Component {
 
     let alphaStroke, betaStroke;
     let state = 0;
+    let yoff = 0.0; 
+    let offset = 0
     //deleted array of words to replace Chevrolet
 
     //perDist per instrument
@@ -313,6 +315,8 @@ class NewSketch2 extends React.Component {
     playButton.parent('#sketchContainer')
     playButton.mousePressed(p.startAudio)
     self.playButton = playButton
+
+    let xoff = 0.0;
 
 
     p.setup = () => {
@@ -622,65 +626,38 @@ class NewSketch2 extends React.Component {
       scene.alphaStroke = alphaStroke.value()
       scene.betaStroke = betaStroke.value()
       scene.bpm = bpmCtr.value()
-      
-
-      // scene.patters
 
       if (!self.state.isLoading) {
         self.setState({
           isLoading: false,
         });
       } else {
-        p.frameRate(17);
-        // get the overall volume (between 0 and 1.0)
-        let vol = mic.getLevel() * strokeB.value() / 10;
+
+        let vol = mic.getLevel() * 10;
         self.vol = vol
-        p.fill(strokeB.value());
-        p.noStroke();
-        p.smooth();
-        // Draw an ellipse with height based on volume
-        let h = p.map(vol, 0, 1, p.random(1233), 0);
-        p.ellipse((p.width / 1.2) * vol, h - 25, vol * 400, vol * 400);
-        drawPointy(betaStroke.value());
-        drawPointy(10);
-        drawArc();
-        p.background(vol * strokeR.value(), vol * strokeG.value(), vol * strokeB.value(), 7);
 
-        function drawPointy(weigh) {
-          p.stroke(vol * strokeR.value() );
-          p.smooth();
-          p.strokeWeight(p.random(weigh));
-          p.point(p.random(p.height * 1.6), p.random(p.width * 1.6));
-        }
 
-        function drawArc() {
-          p.arc(
-            p.random(betaStroke.value()),
-            p.random(2000),
-            vol * betaStroke.value()/20,
-            vol * betaStroke.value()/30,
-            vol * betaStroke.value()/24,
-            p.HALF_PI
-          );
-          p.fill(p.random());
-          p.noStroke();
-          p.arc(
-            p.random(vol * 2000),
-            p.random(betaStroke.value()),
-            vol * 444,
-            vol * 444,
-            p.HALF_PI,
-            p.PI
-          );
-          p.arc(vol * 4400, p.random(300), 700, 70, p.PI, p.PI + p.QUARTER_PI);
-          p.arc(
-            vol * alphaStroke.value(),
-            vol * alphaStroke.value(),
-            vol * alphaStroke.value(),
-            vol * alphaStroke.value(),
-            p.PI + p.QUARTER_PI,
-            p.TWO_PI
-          );
+        xoff = xoff + 0.01;
+        let n = p.noise(xoff) * p.width;
+        // let vol = mic.getLevel() * 10;
+
+        p.background(0, 34 * vol, vol * 3, 14);
+        p.frameRate(16);
+        drawArc(n);
+
+        function drawArc(x) {
+          for (let i = 0; i < 90; i++) {
+            p.smooth();
+            p.fill(vol * n * 4);
+            p.noStroke()
+
+            p.smooth();
+            p.translate(10 * i, vol * 40, vol * 3);
+            p.rotate(p.PI / vol * 3, [vol, 78, i / 2]);
+
+            p.square(vol * n, vol * n, vol * n, vol * n);
+            p.fill(vol * n, 70, 70, 14);
+          }
         }
       }
     };
