@@ -4,7 +4,7 @@ import Navigation from "./components/Navigation";
 import xp from "./pages/Xp";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import Comunity from "./pages/Comunity";
+import Community from "./pages/Community";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Home from "./pages/Home";
@@ -25,7 +25,7 @@ function App() {
         <PublicRoute exact path="/signup" component={Signup} />
         <PublicRoute exact path="/login" component={Login} />
         <PrivateRoute exact path="/xp" component={xp} />
-        <PrivateRoute exact path="/comunity" component={Comunity} />
+        <PrivateRoute exact path="/comunity" component={Community} />
         <PrivateRoute exact path="/profile" component={Profile} />
         <PrivateRoute exact path="/edit-profile" component={EditProfile} />
         <PrivateRoute exact path="/private" component={Private} />

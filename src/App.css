@@ -119,6 +119,13 @@ input[type=range]:focus::-ms-fill-upper {
   background: rgba(158, 185, 187, 0.95);
 }
 .nameScene{
-  padding: 30px;
+  padding-left: 30px;
+  padding-top: 40%;
+  font-size: 30px;
   color: rgb(36, 36, 36);
+}
+.userScene{
+  padding-left: 30px;
+  font-size: 20px;
+  color: rgb(66, 70, 88);
 }

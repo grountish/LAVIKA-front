@@ -292,6 +292,7 @@ class NewSketch extends React.Component {
       ki,
       sn;
 
+    let alphaStroke, betaStroke;
     let state = 0;
     //deleted array of words to replace Chevrolet
 
@@ -517,6 +518,15 @@ class NewSketch extends React.Component {
       strokeB.parent("#controlsContainer")
       //strokeB.class('blue')
       
+      alphaStroke = p.createSlider(0, 2550, alphaStroke, 1)
+      alphaStroke.parent("#controlsContainer")
+     
+
+      betaStroke = p.createSlider(0, 2500, betaStroke, 1)
+      betaStroke.parent("#controlsContainer")
+     
+      
+
       } else {
       //R
       strokeR = p.createSlider(0, 250, 255, 1)
@@ -532,7 +542,13 @@ class NewSketch extends React.Component {
       strokeB = p.createSlider(0, 250, 255, 1)
       strokeB.parent("#controlsContainer")
       //strokeB.class('blue')
-      
+      alphaStroke = p.createSlider(0, 2550, 60, 1)
+      alphaStroke.parent("#controlsContainer")
+     
+
+      betaStroke = p.createSlider(0, 2500, 70, 1)
+      betaStroke.parent("#controlsContainer")
+     
       }
       
     
@@ -603,6 +619,8 @@ class NewSketch extends React.Component {
       scene.strokeR = strokeR.value()
       scene.strokeG = strokeG.value()
       scene.strokeB = strokeB.value()
+      scene.alphaStroke = alphaStroke.value()
+      scene.betaStroke = betaStroke.value()
       scene.bpm = bpmCtr.value()
       
 
@@ -623,7 +641,7 @@ class NewSketch extends React.Component {
         // Draw an ellipse with height based on volume
         let h = p.map(vol, 0, 1, p.random(1233), 0);
         p.ellipse((p.width / 1.2) * vol, h - 25, vol * 400, vol * 400);
-        drawPointy(100);
+        drawPointy(betaStroke.value());
         drawPointy(10);
         drawArc();
         p.background(vol * strokeR.value(), vol * strokeG.value(), vol * strokeB.value(), 7);
@@ -637,18 +655,18 @@ class NewSketch extends React.Component {
 
         function drawArc() {
           p.arc(
+            p.random(betaStroke.value()),
             p.random(2000),
-            p.random(2000),
-            vol * 200,
-            vol * 444,
-            vol * 444,
+            vol * betaStroke.value()/20,
+            vol * betaStroke.value()/30,
+            vol * betaStroke.value()/24,
             p.HALF_PI
           );
           p.fill(p.random());
           p.noStroke();
           p.arc(
             p.random(vol * 2000),
-            p.random(400),
+            p.random(betaStroke.value()),
             vol * 444,
             vol * 444,
             p.HALF_PI,
@@ -656,10 +674,10 @@ class NewSketch extends React.Component {
           );
           p.arc(vol * 4400, p.random(300), 700, 70, p.PI, p.PI + p.QUARTER_PI);
           p.arc(
-            vol * 444,
-            vol * 444,
-            vol * 444,
-            vol * 444,
+            vol * alphaStroke.value(),
+            vol * alphaStroke.value(),
+            vol * alphaStroke.value(),
+            vol * alphaStroke.value(),
             p.PI + p.QUARTER_PI,
             p.TWO_PI
           );
@@ -757,7 +775,7 @@ class NewSketch extends React.Component {
     let ranName = this.nouns[ranInd] +' '+ this.nouns[ranInd-1] 
     scene.name = ranName 
     await this.saveTheFrame()
-    // this.setState({saved:true})
+    //this.setState({saved:true})
     // setTimeout( () => this.setState({saved:false}), 2000 )
   }
   updateScene = async () => {
@@ -891,7 +909,7 @@ class NewSketch extends React.Component {
           <SketchContainer className="sketchContainer" id="sketchContainer">
          
        {
-         this.isTheArtist() 
+         this.isTheArtist()
          ?  <button onClick={this.updateScene}>Update scene</button>
          : <button onClick={this.saveScene}>Save scene</button>
        }  

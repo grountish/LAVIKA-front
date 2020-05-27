@@ -25,7 +25,7 @@ let scene = {
   strokeG: '' ,
   strokeB: '',
   capture: '',
-  bpm: '',
+  bpm: '60',
   
   patterns: {
     hPat: [1, 0, 1, 0],
@@ -292,6 +292,7 @@ class NewSketch2 extends React.Component {
       ki,
       sn;
 
+    let alphaStroke, betaStroke;
     let state = 0;
     //deleted array of words to replace Chevrolet
 
@@ -497,8 +498,6 @@ class NewSketch2 extends React.Component {
       } else {
         drums.setBPM('60')
       }
-      
-      
       ////////////////////////new sliders
 
       if(self.props.scene) {
@@ -510,15 +509,24 @@ class NewSketch2 extends React.Component {
       //strokeR.id('red')
 
       //G
-      strokeG = p.createSlider(0, 250, gValue, 1)
+      strokeG = p.createSlider(0, 250, bValue, 1)
       strokeG.parent("#controlsContainer")
       //strokeG.id('green')
 
       //B
-      strokeB = p.createSlider(0, 250, bValue, 1)
+      strokeB = p.createSlider(0, 250, gValue, 1)
       strokeB.parent("#controlsContainer")
       //strokeB.class('blue')
       
+      alphaStroke = p.createSlider(0, 2550, alphaStroke, 1)
+      alphaStroke.parent("#controlsContainer")
+     
+
+      betaStroke = p.createSlider(0, 2500, betaStroke, 1)
+      betaStroke.parent("#controlsContainer")
+     
+      
+
       } else {
       //R
       strokeR = p.createSlider(0, 250, 255, 1)
@@ -534,7 +542,13 @@ class NewSketch2 extends React.Component {
       strokeB = p.createSlider(0, 250, 255, 1)
       strokeB.parent("#controlsContainer")
       //strokeB.class('blue')
-      
+      alphaStroke = p.createSlider(0, 2550, 60, 1)
+      alphaStroke.parent("#controlsContainer")
+     
+
+      betaStroke = p.createSlider(0, 2500, 70, 1)
+      betaStroke.parent("#controlsContainer")
+     
       }
       
     
@@ -542,6 +556,8 @@ class NewSketch2 extends React.Component {
 
     p.addIns = () => {
       
+      
+
       let chosen = p.random(arrOfSin);
       i = p.floor(p.random(perDist));
       let ranC = p.random(255); // piks a random value between 0 and 255
@@ -603,7 +619,10 @@ class NewSketch2 extends React.Component {
       scene.strokeR = strokeR.value()
       scene.strokeG = strokeG.value()
       scene.strokeB = strokeB.value()
-    
+      scene.alphaStroke = alphaStroke.value()
+      scene.betaStroke = betaStroke.value()
+      scene.bpm = bpmCtr.value()
+      
 
       // scene.patters
 
@@ -622,7 +641,7 @@ class NewSketch2 extends React.Component {
         // Draw an ellipse with height based on volume
         let h = p.map(vol, 0, 1, p.random(1233), 0);
         p.ellipse((p.width / 1.2) * vol, h - 25, vol * 400, vol * 400);
-        drawPointy(100);
+        drawPointy(betaStroke.value());
         drawPointy(10);
         drawArc();
         p.background(vol * strokeR.value(), vol * strokeG.value(), vol * strokeB.value(), 7);
@@ -636,18 +655,18 @@ class NewSketch2 extends React.Component {
 
         function drawArc() {
           p.arc(
+            p.random(betaStroke.value()),
             p.random(2000),
-            p.random(2000),
-            vol * 200,
-            vol * 444,
-            vol * 444,
+            vol * betaStroke.value()/20,
+            vol * betaStroke.value()/30,
+            vol * betaStroke.value()/24,
             p.HALF_PI
           );
           p.fill(p.random());
           p.noStroke();
           p.arc(
             p.random(vol * 2000),
-            p.random(400),
+            p.random(betaStroke.value()),
             vol * 444,
             vol * 444,
             p.HALF_PI,
@@ -655,10 +674,10 @@ class NewSketch2 extends React.Component {
           );
           p.arc(vol * 4400, p.random(300), 700, 70, p.PI, p.PI + p.QUARTER_PI);
           p.arc(
-            vol * 444,
-            vol * 444,
-            vol * 444,
-            vol * 444,
+            vol * alphaStroke.value(),
+            vol * alphaStroke.value(),
+            vol * alphaStroke.value(),
+            vol * alphaStroke.value(),
             p.PI + p.QUARTER_PI,
             p.TWO_PI
           );
@@ -725,8 +744,7 @@ class NewSketch2 extends React.Component {
 
     p.saveFrames('out', 'png', 1, 1, data => {
       scene.capture = data[0].imageData 
-      scene.bpm = bpmCtr.value()
-      
+
       axios.post(process.env.REACT_APP_API_URL + '/scenes/save', scene, { withCredentials: true })
       .then(res => {
         console.log(res);
@@ -757,12 +775,14 @@ class NewSketch2 extends React.Component {
     let ranName = this.nouns[ranInd] +' '+ this.nouns[ranInd-1] 
     scene.name = ranName 
     await this.saveTheFrame()
+    //this.setState({saved:true})
+    // setTimeout( () => this.setState({saved:false}), 2000 )
   }
   updateScene = async () => {
     scene.capture = this.props.scene.capture
     scene.name = this.props.scene.name
     scene.sceneId = this.props.scene._id
-   
+
     axios.put(process.env.REACT_APP_API_URL + '/scenes/update', scene, { withCredentials: true })
     .then(res => {
       console.log(res);
@@ -889,20 +909,22 @@ class NewSketch2 extends React.Component {
           <SketchContainer className="sketchContainer" id="sketchContainer">
          
        {
-         this.isTheArtist() 
+         this.isTheArtist()
          ?  <button onClick={this.updateScene}>Update scene</button>
          : <button onClick={this.saveScene}>Save scene</button>
        }  
+       {
+        this.state.saved
+         ? <div> <h1 style={{color:'white'}}>Saved!</h1>  </div>
+         :null
+       }
             
             </SketchContainer>
 
-           
                <ControlsContainer
             className="controlsContainer"
             id="controlsContainer">
             </ControlsContainer>
-           
-           
          </MainDiv>
       </>
     );
