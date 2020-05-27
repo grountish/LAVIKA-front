@@ -25,7 +25,7 @@ let scene = {
   strokeG: '' ,
   strokeB: '',
   capture: '',
-  bpm: '60',
+  bpm: '',
   
   patterns: {
     hPat: [1, 0, 1, 0],
@@ -485,13 +485,18 @@ class NewSketch2 extends React.Component {
 
       // SET BPM
 
-      bpmCtr = p.createSlider(30, 140, 60, 1);
+      bpmCtr = p.createSlider(30, 140, this.props.scene.bpm || 60, 1);
       bpmCtr.parent("#controlsContainer");
 
       bpmCtr.input(() => {
         drums.setBPM(bpmCtr.value());
       });
-      drums.setBPM(this.props.scene.bpm || "60");
+      if(this.props.scene.bpm !== undefined){
+
+        drums.setBPM(this.props.scene.bpm );
+      } else {
+        drums.setBPM('60')
+      }
       
       
       ////////////////////////new sliders
@@ -505,12 +510,12 @@ class NewSketch2 extends React.Component {
       //strokeR.id('red')
 
       //G
-      strokeG = p.createSlider(0, 250, bValue, 1)
+      strokeG = p.createSlider(0, 250, gValue, 1)
       strokeG.parent("#controlsContainer")
       //strokeG.id('green')
 
       //B
-      strokeB = p.createSlider(0, 250, gValue, 1)
+      strokeB = p.createSlider(0, 250, bValue, 1)
       strokeB.parent("#controlsContainer")
       //strokeB.class('blue')
       
@@ -537,8 +542,6 @@ class NewSketch2 extends React.Component {
 
     p.addIns = () => {
       
-      
-
       let chosen = p.random(arrOfSin);
       i = p.floor(p.random(perDist));
       let ranC = p.random(255); // piks a random value between 0 and 255
@@ -600,8 +603,7 @@ class NewSketch2 extends React.Component {
       scene.strokeR = strokeR.value()
       scene.strokeG = strokeG.value()
       scene.strokeB = strokeB.value()
-      scene.bpm = bpmCtr.value()
-      
+    
 
       // scene.patters
 
@@ -723,7 +725,8 @@ class NewSketch2 extends React.Component {
 
     p.saveFrames('out', 'png', 1, 1, data => {
       scene.capture = data[0].imageData 
-
+      scene.bpm = bpmCtr.value()
+      
       axios.post(process.env.REACT_APP_API_URL + '/scenes/save', scene, { withCredentials: true })
       .then(res => {
         console.log(res);
@@ -759,7 +762,7 @@ class NewSketch2 extends React.Component {
     scene.capture = this.props.scene.capture
     scene.name = this.props.scene.name
     scene.sceneId = this.props.scene._id
-
+   
     axios.put(process.env.REACT_APP_API_URL + '/scenes/update', scene, { withCredentials: true })
     .then(res => {
       console.log(res);

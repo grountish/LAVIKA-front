@@ -696,8 +696,7 @@ class NewSketch3 extends React.Component {
       self.parr = parr;
       parr.id("parr");
       parr.parent("#lyricContainer");
-      // let wordsSeparated = []
-      // wordsSeparated = rita.tokenize(result)
+   
     };
     
     

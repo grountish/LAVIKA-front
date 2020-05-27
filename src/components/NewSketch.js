@@ -485,15 +485,18 @@ class NewSketch extends React.Component {
 
       // SET BPM
 
-      bpmCtr = p.createSlider(30, 140, 60, 1);
+      bpmCtr = p.createSlider(30, 140, this.props.scene.bpm || 60, 1);
       bpmCtr.parent("#controlsContainer");
 
       bpmCtr.input(() => {
         drums.setBPM(bpmCtr.value());
       });
-      drums.setBPM(this.props.scene.bpm || "60");
-      
-      
+      if(this.props.scene.bpm !== undefined){
+
+        drums.setBPM(this.props.scene.bpm );
+      } else {
+        drums.setBPM('60')
+      }
       ////////////////////////new sliders
 
       if(self.props.scene) {
@@ -754,8 +757,8 @@ class NewSketch extends React.Component {
     let ranName = this.nouns[ranInd] +' '+ this.nouns[ranInd-1] 
     scene.name = ranName 
     await this.saveTheFrame()
-    this.setState({saved:true})
-    setTimeout( () => this.setState({saved:false}), 2000 )
+    // this.setState({saved:true})
+    // setTimeout( () => this.setState({saved:false}), 2000 )
   }
   updateScene = async () => {
     scene.capture = this.props.scene.capture
@@ -894,7 +897,7 @@ class NewSketch extends React.Component {
        }  
        {
         this.state.saved
-         ? <div> <h1>Saved!</h1>  </div>
+         ? <div> <h1 style={{color:'white'}}>Saved!</h1>  </div>
          :null
        }
             
