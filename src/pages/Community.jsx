@@ -32,6 +32,7 @@ class Community extends Component {
           grid-auto-rows: min-max(15rem);
           justify-items: center;
           align-items: center;
+          border-radius:10%
     `
   
     const ScenesCards = styled.div`

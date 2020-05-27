@@ -89,7 +89,8 @@ background-color: #a71b1b;
 border: 2px solid black;
 border-radius: 10%;
 text-align: center;
-padding:3px;
+padding:7px;
+margin-top:10px;
 cursor: pointer;
 opacity: 0.75;
 `
