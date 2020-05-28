@@ -2,15 +2,15 @@ import React from "react";
 import p5 from "p5";
 import "p5/lib/addons/p5.sound";
 import "p5/lib/addons/p5.dom";
-import hhSound from "../samples/hh.wav";
-import kSound from "../samples/k.wav";
-import o1Sound from "../samples/o1.wav";
-import o2Sound from "../samples/o2.wav";
-import o3Sound from "../samples/o3.wav";
-import o4Sound from "../samples/o4.wav";
-import o5Sound from "../samples/o5.wav";
-import o6Sound from "../samples/o6.wav";
-import sSound from "../samples/s.wav";
+import hhSound from "../samples/samples1/hh.wav";
+import kSound from "../samples/samples1/k.wav";
+import o1Sound from "../samples/samples1/o1.wav";
+import o2Sound from "../samples/samples1/o2.wav";
+import o3Sound from "../samples/samples1/o3.wav";
+import o4Sound from "../samples/samples1/o4.wav";
+import o5Sound from "../samples/samples1/o5.wav";
+import o6Sound from "../samples/samples1/o6.wav";
+import sSound from "../samples/samples1/s.wav";
 import rita from "rita";
 import styled from "styled-components";
 import { Device } from "../components/Device";
@@ -319,7 +319,7 @@ class NewSketch extends React.Component {
       p.getAudioContext().suspend();
 
       // CANVAS
-      cnv = p.createCanvas(500, 500);
+      cnv = p.createCanvas(400, 400);
       self.canvas = cnv;
       cnv.mousePressed(p.addIns);
       cnv.parent("#sketchContainer");
