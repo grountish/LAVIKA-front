@@ -5,18 +5,26 @@ import styled from "styled-components";
 import { Device } from "../components/Device";
 import Navigation from "../components/Navigation";
 import { Link } from "react-router-dom";
+import Loader from  "../components/Loader";
+import gif from './../images/transparent-welcome-gif-background-3.gif';
 
 class Community extends Component {
   // static contextType = SongsContext;
   state = {
-    scenes: [],
+    scenes: '',
+    isLoading: false
   };
 
   componentDidMount() {
     axios
       .get("http://localhost:5000/scenes", { withCredentials: true })
       .then((response) => this.setState({ scenes: response.data }));
-      console.log(this.state.scenes);
+    this.setTheLoader()
+
+  }
+
+  setTheLoader=()=>{
+    this.setState({isLoading:true})
   }
 
   render() {
@@ -122,10 +130,12 @@ class Community extends Component {
     `;
     return (
       <div>
-        <Title>Community Page </Title>
-        <ScenesDiv>
-              { this.state.scenes !== undefined 
-              ? this.state.scenes.map(scene=>{
+      {
+        this.state.scenes === ''
+        ?   <Loader/>
+        :  <ScenesDiv>
+              {
+               this.state.scenes.map(scene=>{
                   return(
                      <ScenesCards className="sceneCard" key={scene._id}>
                   
@@ -141,10 +151,11 @@ class Community extends Component {
                     </ScenesCards> 
                   )
                 })
-                : null
+               
               }
             </ScenesDiv>
-      </div>
+      }
+          </div>
     );
   }
 }

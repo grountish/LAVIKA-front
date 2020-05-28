@@ -3,6 +3,7 @@ import axios from "axios";
 import { withAuth } from "./../lib/Auth";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import Loader from  "../components/Loader";
 
 const ProfilePage = styled.div`
      max-width: 95%;
@@ -139,7 +140,7 @@ class Profile extends Component {
     return (
       <ProfilePage>
         {!user ? (
-          "loading"
+          <Loader />
         ) : (
           <div>
           <ProfileDiv >
@@ -153,7 +154,7 @@ class Profile extends Component {
            <button> <Link style={{color:'white'}} to={`/edit-profile`}>
                   <h4>Edit profile</h4>
             </Link></button>
-        </ProfileDiv>
+           </ProfileDiv>
             <ScenesDiv>
               { user.scenes !== undefined 
               ? user.scenes.map(scene=>{

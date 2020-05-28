@@ -132,3 +132,7 @@ input[type=range]:focus::-ms-fill-upper {
   font-size: 20px;
   color: rgb(66, 70, 88);
 }
+.spinner{
+  margin: 15% auto;
+  width: 300px;
+}

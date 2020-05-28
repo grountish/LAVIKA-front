@@ -6,7 +6,7 @@ import { withAuth } from './../lib/Auth';
 import axios from 'axios'
 import styled from "styled-components";
 import { Device } from "../components/Device";
-
+import Loader from  "../components/Loader";
 const XpContainer = styled.div`
 @media ${Device.laptop} {
   text-align:center
@@ -81,7 +81,7 @@ class Xp extends Component {
       <button className="buttonSwitch" onClick={this.switchCanvas}>Switch experience</button>
     {
       this.state.scene === null 
-      ? 'put spinner here' 
+      ? <Loader />
       : canvas
   
     }
